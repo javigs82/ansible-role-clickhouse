@@ -82,6 +82,7 @@ clickhouse_user_list:
       quota: "default" }
   - { user_name: "default",
       profile: "default",
+
       networks: ["::1", "127.0.0.1"],
       quota: "default" }
 

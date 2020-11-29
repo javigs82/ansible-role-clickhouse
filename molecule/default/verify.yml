@@ -17,3 +17,32 @@
       assert:
         that:
           - "'Active: active (running)' in service_status.stdout"
+
+    - name: Check ClickHouse client show database query
+      command: clickhouse-client --query='SHOW DATABASES;'
+      args:
+        warn: no
+      register: query_result
+      changed_when: no
+  
+    - name: Verify ClickHouse client
+      assert:
+        that:
+          - query_result.rc == 0
+          - query_result.stdout|length > 0
+    
+    - name: Create database
+      command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS molecule_tests"
+      changed_when: no
+
+    - name: Create table
+      command: clickhouse-client --query "CREATE TABLE IF NOT EXISTS molecule_tests.insert_data(`id` UInt32, `City` String) ENGINE=TinyLog();"
+      changed_when: no
+
+    - name: Insert data into table, 1.
+      command: clickhouse-client --query "INSERT INTO molecule_tests.insert_data VALUES(11, 'Madrid');"
+      changed_when: no
+
+    - name: Insert data into table, 2.
+      command: clickhouse-client --query "INSERT INTO molecule_tests.insert_data VALUES(33, 'Leon');"
+      changed_when: no
