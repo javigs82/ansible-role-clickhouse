@@ -1,15 +1,25 @@
 *******
-Delegated driver installation guide
+Molecule installation guide
 *******
 
 Requirements
 ============
+* ansible => 2.7
+* python3
+* pip3
+* Molecule (see https://molecule.readthedocs.io/en/latest/installation.html) 
+* Testinfra (see https://testinfra.readthedocs.io/en/latest/)
 
-This driver is delegated to the developer.  Up to the developer to implement
-requirements.
+**Note** that molecule & testinfra have some issues over python 2.
 
 Install
 =======
+```sh
 
-This driver is delegated to the developer.  Up to the developer to implement
-requirements.
+pip3 install molecule[docker]
+pip3 install testinfra
+pip3 install debops
+pip3 install netaddr
+pip3 install future
+
+```
