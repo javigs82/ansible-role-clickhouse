@@ -1,5 +1,5 @@
 ---
-- name: Ensure clickhouse config, data and logs exist
+- name: Ensure clickhouse path config
   file:
     dest: "{{ item }}"
     owner: "{{ clickhouse_user }}"
@@ -8,9 +8,9 @@
   with_items:
     - "{{ clickhouse_path_config }}"
     - "{{ clickhouse_path_config_d }}"
+    - "{{ clickhouse_path_data }}"
     - "{{ clickhouse_path_log }}"
     - "{{ clickhouse_path_tmp }}"
-    - "{{ clickhouse_path_data }}"
 
   notify: restart-ch
 
@@ -20,6 +20,7 @@
     dest: "{{ clickhouse_path_config }}/config.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
+    mode: 0664
   notify: restart-ch
 
 # user conf does not force to restart :)
@@ -29,6 +30,7 @@
     dest: /etc/clickhouse-server/users.d/{{ item.user_name }}.xml
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
+    mode: 0664
   with_items: "{{ clickhouse_user_list }}"
   no_log: true
 
@@ -38,15 +40,16 @@
     dest: "{{ clickhouse_path_config_d }}/clickhouse_remote_servers.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
+    mode: 0664
   notify: restart-ch
 
-- name: Config macros 
+- name: Config macros
   template:
     src: macros.xml.j2
     dest: "{{ clickhouse_path_config_d }}/macros.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
-    mode: 0644
+    mode: 0664
   notify: restart-ch
 
 - name: Config zookeeper
@@ -55,8 +58,6 @@
     dest: "{{ clickhouse_path_config_d }}/zookeeper-servers.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
-    mode: 0644
+    mode: 0664
   notify: restart-ch
   when: clickhouse_zookeeper_nodes is defined
-
-  

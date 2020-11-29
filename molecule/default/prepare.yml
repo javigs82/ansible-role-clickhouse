@@ -6,7 +6,7 @@
       yum:
         name: epel-release
         state: present
-  
+
     - name: Install nss-mdns
       yum:
         name: nss-mdns
@@ -16,4 +16,3 @@
       systemd:
         name: avahi-daemon
         state: started
-  

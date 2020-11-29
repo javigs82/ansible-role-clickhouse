@@ -1,6 +1,6 @@
-# Clickhouse Cluster
+# Ansible Clickhouse
 
-This role install and configure clickhouse cluster for N shard and M replicas in `centos7`.
+This role is in charge of configuring & installing a clickhouse cluster with N shard and M replicas in `centos7`.
 
 ## Requirements
 
@@ -85,7 +85,7 @@ Including an example of how to use your role (for instance, with variables passe
 
 * javigs82 [github](https://github.com/javigs82/)
 
-## Acknowledges
+### Acknowledges
 
  - https://github.com/AlexeySetevoi/ansible-clickhouse
  - https://github.com/nl2go/ansible-role-clickhouse

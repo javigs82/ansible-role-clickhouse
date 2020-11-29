@@ -24,13 +24,13 @@
         warn: no
       register: query_result
       changed_when: no
-  
+
     - name: Verify ClickHouse client
       assert:
         that:
           - query_result.rc == 0
           - query_result.stdout|length > 0
-    
+
     - name: Create database
       command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS molecule_tests"
       changed_when: no

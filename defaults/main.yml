@@ -58,11 +58,11 @@ clickhouse_cluster:
   shard01:
     - { host: "ch-shard01-replica01.local", port: "{{ clickhouse_tcp_port }}" }
     - { host: "ch-shard01-replica02.local", port: "{{ clickhouse_tcp_port }}" }
-  # shard2:
-  #   - { host: "ch-shard2-replica1.local", port: "{{ clickhouse_tcp_port }}" }
-  #   - { host: "ch-shard2-replica2.local", port: "{{ clickhouse_tcp_port }}" }
+  # shard02:
+  #   - { host: "ch-shard02-replica01.local", port: "{{ clickhouse_tcp_port }}" }
+  #   - { host: "ch-shard02-replica02.local", port: "{{ clickhouse_tcp_port }}" }
 
-# zookeeper is not at all mandatory: 
+# zookeeper is not at all mandatory
 clickhouse_zookeeper_nodes: []
 
 # ch tree
