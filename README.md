@@ -55,12 +55,11 @@ with `nss-mdns` and `avahi`, vagrant is able to resolve dns just like **<hostnam
 
 In order to "mount" the cluster, `hostname` takes an important consideration.
 
-Shards and Replicates are define like a yml structure in the following way:
+Cluster is defined in a yaml structure like:
 
-> shard<N>.replica<N>.local
+> shardN.replicaN.local
 
-where **local** can be any domain that can be resolve. Notice that this role implements vagrant-molecule and use special configuration
-to develope a service discovery. [Click here for more info](./molecule/default/prepare.yml)
+where **shardN.replicaN** is the hostname and **local** is the domain to be resolved. Notice that this role implements vagrant-molecule and use special configuration to use service discovery. [Click here for more info](./molecule/default/prepare.yml)
 
 ## Role Variables
 
