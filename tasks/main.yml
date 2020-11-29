@@ -1,0 +1,5 @@
+---
+  - import_tasks: install-yum.yml
+    tags: [ch::install]
+  - import_tasks: config.yml
+    tags: [ch::config]

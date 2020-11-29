@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: clickhouse
+  tasks:
+    - name: "Include ansible-role-clickhouse-cluster"
+      include_role:
+        name: "ansible-role-clickhouse-cluster"

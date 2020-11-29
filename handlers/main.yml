@@ -1,0 +1,7 @@
+---
+- name: restart-ch
+  systemd:
+    name: clickhouse-server
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

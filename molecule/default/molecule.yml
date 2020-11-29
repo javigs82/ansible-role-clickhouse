@@ -1,0 +1,50 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+platforms:
+  - name: ch-shard1-replica1
+    box: centos/7
+    memory: 4096
+    cpus: 2
+    hostname: ch-shard1-replica1
+    interfaces:
+      - network_name: private_network
+        ip: 192.168.69.69
+        virtualbox__intnet: true
+    groups:
+      - clickhouse
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: "'vagrant'"
+  - name: ch-shard1-replica2
+    box: centos/7
+    memory: 4096
+    cpus: 2
+    hostname: ch-shard1-replica2
+    interfaces:
+      - network_name: private_network
+        ip: 192.168.69.70
+        virtualbox__intnet: true
+    groups:
+      - clickhouse
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: "'vagrant'"
+provisioner:
+  name: ansible
+  connection_options:
+    ansible_ssh_user: vagrant
+    ansible_become: true
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+verifier:
+  name: testinfra
+  options:
+    sudo: true
+    v: 1

@@ -1,0 +1,91 @@
+---
+# version
+clickhouse_version: "20.9.5.5"
+clickhouse_allow_downgrade: false
+
+# user/group
+clickhouse_group: clickhouse
+clickhouse_user: clickhouse
+
+# yum support 
+clickhouse_supported: yes
+clickhouse_repo: "https://repo.clickhouse.tech/rpm/stable/x86_64/"
+clickhouse_repo_key: https://repo.clickhouse.tech//CLICKHOUSE-KEY.GPG
+clickhouse_package:
+  - "clickhouse-client-{{ clickhouse_version }}"
+  - "clickhouse-common-static-{{ clickhouse_version }}"
+  - "clickhouse-server-{{ clickhouse_version }}"
+
+# path structure
+clickhouse_path_config: "/etc/clickhouse-server"
+clickhouse_path_config_d: "{{ clickhouse_path_config }}/config.d"
+clickhouse_path_log: "/var/log/clickhouse-server"
+clickhouse_path_base: "/var/lib"
+clickhouse_path_data: "{{ clickhouse_path_base }}/clickhouse/"
+clickhouse_path_tmp: "{{ clickhouse_path_base }}/clickhouse/tmp/"
+clickhouse_path_user_files: "{{ clickhouse_path_base }}/clickhouse/user_files/"
+
+# ch networking
+clickhouse_http_port: 8123
+clickhouse_https_port: 8443
+clickhouse_tcp_port: 9000
+clickhouse_tcp_secure_port: 9440
+clickhouse_interserver_http: 9009
+clickhouse_networks_default:
+  - "::1"
+  - "127.0.0.1"
+clickhouse_listen_host_default:
+  - "::1"
+  - "127.0.0.1"
+clickhouse_listen_host_custom: []
+clickhouse_listen_host: "{{ clickhouse_listen_host_default + clickhouse_listen_host_custom }}"
+
+# ch config
+clickhouse_config:
+  max_connections: 2048
+  keep_alive_timeout: 3
+  max_concurrent_queries: 100
+  uncompressed_cache_size: 8589934592
+  mark_cache_size: 5368709120
+  builtin_dictionaries_reload_interval: 3600
+  max_session_timeout: 3600
+  default_session_timeout: 60
+  mlock_status: false
+
+# ch tree
+clickhouse_merge_tree_config: []
+
+# ch users
+clickhouse_user_list:
+  - { user_name: "reader",
+      profile: "readonly",
+      password: "r3ad3R",
+      networks: ["::/0"],
+      quota: "default" }
+  - { user_name: "javito",
+      profile: "default",
+      password: "J4v1t0",
+      networks: ["::/0"],
+      quota: "default" }
+  - { user_name: "default",
+      profile: "default",
+      password: "",
+      networks: ["::1", "127.0.0.1"],
+      quota: "default" }
+
+# ch cluster definition
+clickhouse_cluster:
+  shard1:
+    - { host: "ch-shard1-replica1.local", port: "{{ clickhouse_tcp_port }}" }
+    - { host: "ch-shard1-replica2.local", port: "{{ clickhouse_tcp_port }}" }
+  # shard2:
+  #   - { host: "ch-shard2-replica1.local", port: "{{ clickhouse_tcp_port }}" }
+  #   - { host: "ch-shard2-replica2.local", port: "{{ clickhouse_tcp_port }}" }
+
+# ch logger
+clickhouse_logger:
+  level: trace
+  log: "{{ clickhouse_path_log }}/clickhouse-server.log"
+  errorlog: "{{ clickhouse_path_log }}/clickhouse-server.err.log"
+  size: 1000M
+  count: 10
