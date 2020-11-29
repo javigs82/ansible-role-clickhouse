@@ -17,7 +17,7 @@ clickhouse_package:
   - "clickhouse-common-static-{{ clickhouse_version }}"
   - "clickhouse-server-{{ clickhouse_version }}"
 
-# path structure
+# path
 clickhouse_path_config: "/etc/clickhouse-server"
 clickhouse_path_config_d: "{{ clickhouse_path_config }}/config.d"
 clickhouse_path_log: "/var/log/clickhouse-server"
