@@ -2,6 +2,7 @@
 # version
 clickhouse_version: "20.9.5.5"
 clickhouse_allow_downgrade: false
+clickhouse_display_name: "mycluster"
 
 # user/group
 clickhouse_group: clickhouse
@@ -52,6 +53,18 @@ clickhouse_config:
   default_session_timeout: 60
   mlock_status: false
 
+# ch cluster definition
+clickhouse_cluster:
+  shard1:
+    - { host: "ch-shard1-replica1.local", port: "{{ clickhouse_tcp_port }}" }
+    - { host: "ch-shard1-replica2.local", port: "{{ clickhouse_tcp_port }}" }
+  # shard2:
+  #   - { host: "ch-shard2-replica1.local", port: "{{ clickhouse_tcp_port }}" }
+  #   - { host: "ch-shard2-replica2.local", port: "{{ clickhouse_tcp_port }}" }
+
+# zookeeper is not at all mandatory: 
+clickhouse_zookeeper_nodes: []
+
 # ch tree
 clickhouse_merge_tree_config: []
 
@@ -69,18 +82,8 @@ clickhouse_user_list:
       quota: "default" }
   - { user_name: "default",
       profile: "default",
-      password: "",
       networks: ["::1", "127.0.0.1"],
       quota: "default" }
-
-# ch cluster definition
-clickhouse_cluster:
-  shard1:
-    - { host: "ch-shard1-replica1.local", port: "{{ clickhouse_tcp_port }}" }
-    - { host: "ch-shard1-replica2.local", port: "{{ clickhouse_tcp_port }}" }
-  # shard2:
-  #   - { host: "ch-shard2-replica1.local", port: "{{ clickhouse_tcp_port }}" }
-  #   - { host: "ch-shard2-replica2.local", port: "{{ clickhouse_tcp_port }}" }
 
 # ch logger
 clickhouse_logger:

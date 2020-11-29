@@ -43,8 +43,8 @@ lint: |
   set -e
   yamllint .
   ansible-lint
-verifier:
-  name: testinfra
-  options:
-    sudo: true
-    v: 1
+# verifier:
+#   name: testinfra
+#   options:
+#     sudo: true
+#     v: 1

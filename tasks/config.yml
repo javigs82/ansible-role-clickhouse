@@ -48,4 +48,15 @@
     group: "{{ clickhouse_group }}"
     mode: 0644
   notify: restart-ch
+
+- name: Config zookeeper
+  template:
+    src: zookeeper-servers.xml.j2
+    dest: "{{ clickhouse_path_config_d }}/zookeeper-servers.xml"
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: 0644
+  notify: restart-ch
+  when: clickhouse_zookeeper_nodes is defined
+
   

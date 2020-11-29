@@ -5,6 +5,15 @@
   hosts: all
   gather_facts: false
   tasks:
-  - name: Example assertion
-    assert:
-      that: true
+    - name: Check ClickHouse service status
+      command: systemctl status clickhouse-server
+      args:
+        warn: no
+      register: service_status
+      changed_when: no
+      ignore_errors: yes
+
+    - name: Verify ClickHouse is running
+      assert:
+        that:
+          - "'Active: active (running)' in service_status.stdout"

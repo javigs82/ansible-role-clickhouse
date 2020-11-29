@@ -1,6 +1,6 @@
 # Clickhouse Cluster
 
-This role install and configure clickhouse cluster for N shard and M replicas.
+This role install and configure clickhouse cluster for N shard and M replicas in `centos7`.
 
 ## Requirements
 
@@ -51,6 +51,17 @@ with `nss-mdns` and `avahi`, vagrant is able to resolve dns just like **<hostnam
  - Users: Dynamic list to manage users. Password are not implemented
  - RBAC: TO BE IMPLEMENTED
 
+### Cluster configuration
+
+In order to "mount" the cluster, `hostname` takes an important consideration.
+
+Shards and Replicates are define like a yml structure in the following way:
+
+> shard<N>.replica<N>.local
+
+where **local** can be any domain that can be resolve. Notice that this role implements vagrant-molecule and use special configuration
+to develope a service discovery. [Click here for more info](./molecule/default/prepare.yml)
+
 ## Role Variables
 
 A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
@@ -69,7 +80,7 @@ Including an example of how to use your role (for instance, with variables passe
          - { role: username.rolename, x: 42 }
 
 ## TODO
- - macros
+ - macros: obtain macro definiton by hostname
 
 ## License
 
