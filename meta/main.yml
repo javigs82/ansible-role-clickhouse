@@ -11,6 +11,6 @@ galaxy_info:
     versions:
     - 7
 
-  galaxy_tags: [clickhouse, clickhouse-cluster]
+  galaxy_tags: [clickhouse, clickhousecluster, cluster]
 
 dependencies: []

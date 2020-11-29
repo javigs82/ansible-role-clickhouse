@@ -2,6 +2,11 @@
 
 This role is in charge of configuring & installing a clickhouse cluster with N shard and M replicas in `centos7`.
 
+**Clickhouse-cluster** is built on top of hostname, so ensure hostname is properly set for
+being used in [defaults](./defaults/main.yml) 
+
+**Notice** that in this moment this role only allows 1 shard. In `todo` section there is a summary with some tasks
+
 ## Requirements
 
 Please install following package to use `molecule` as TDD tool
@@ -16,7 +21,9 @@ pip3 install testinfra
 
 where `vagrant` is the driver and `testinfra` is the testing provider.
 
-Assuming vagrant does not provide any dns solution, the following software is installed in prepare.yml
+This solution is based on the ability of resolve hostname in a private dns server.
+So, assuming vagrant does not provide any dns solution, the following software is installed in prepare.yml,
+providing vagrant infrastructure with internal dns resolver
 
 ```yml
 
@@ -42,6 +49,8 @@ Assuming vagrant does not provide any dns solution, the following software is in
 ```
 
 with `nss-mdns` and `avahi`, vagrant is able to resolve dns just like **<hostname>.local**
+
+**Notice** that DNS resolution supposes to be more sophisticated in a real world use case.
 
 ## Design
 
