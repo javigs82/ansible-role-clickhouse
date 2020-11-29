@@ -1,10 +1,10 @@
-- name: Ensure clickhouse group install
+- name: Ensure clickhouse group
   group:
     name: "{{ clickhouse_group }}"
     system: yes
     state: present
 
-- name: Ensure clickhouse user install
+- name: Ensure clickhouse user
   user:
     name: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"

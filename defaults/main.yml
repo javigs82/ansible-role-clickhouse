@@ -53,11 +53,11 @@ clickhouse_config:
   default_session_timeout: 60
   mlock_status: false
 
-# ch cluster definition
+# ch cluster definition. Map of shards, replicas
 clickhouse_cluster:
-  shard1:
-    - { host: "ch-shard1-replica1.local", port: "{{ clickhouse_tcp_port }}" }
-    - { host: "ch-shard1-replica2.local", port: "{{ clickhouse_tcp_port }}" }
+  shard01:
+    - { host: "ch-shard01-replica01.local", port: "{{ clickhouse_tcp_port }}" }
+    - { host: "ch-shard01-replica02.local", port: "{{ clickhouse_tcp_port }}" }
   # shard2:
   #   - { host: "ch-shard2-replica1.local", port: "{{ clickhouse_tcp_port }}" }
   #   - { host: "ch-shard2-replica2.local", port: "{{ clickhouse_tcp_port }}" }

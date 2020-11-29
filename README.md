@@ -80,7 +80,7 @@ Including an example of how to use your role (for instance, with variables passe
          - { role: username.rolename, x: 42 }
 
 ## TODO
- - macros: obtain macro definiton by hostname
+ - macros: implement shard name if exists in replicas
 
 ## Author
 
