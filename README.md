@@ -5,8 +5,6 @@ This role is in charge of configuring & installing a clickhouse cluster with N s
 **Clickhouse-cluster** is built on top of hostname, so ensure hostname is properly set for
 being used in [defaults](./defaults/main.yml) 
 
-**Notice** that in this moment this role only allows 1 shard. In `todo` section there is a summary with some tasks
-
 ## Requirements
 
 Please install following package to use `molecule` as TDD tool
@@ -84,18 +82,15 @@ Check variables in [defaults](./defaults/main.yml)
 
 ## Dependencies
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+`Clickhouse` depends on `Zookeeper` to archive **consistency**
 
 ## Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
+    - hosts: clickhouse
       roles:
-         - { role: username.rolename, x: 42 }
-
-## TODO
- - macros: implement shard name if exists in replicas
+         - { role: javigs82.ansible_role_clickhouse, clickhouse_display_name: "e-commerce" }
 
 ## References
 
