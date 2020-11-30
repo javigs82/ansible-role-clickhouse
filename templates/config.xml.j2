@@ -59,13 +59,9 @@
     <!-- Hostname that is used by other replicas to request this server.
          If not specified, than it is determined analoguous to 'hostname -f' command.
          This setting could be used to switch replication to another network interface.
-      -->
-    <!--
-    <interserver_http_host>example.yandex.ru</interserver_http_host>
-    -->
-{% if clickhouse_interserver_http_host is defined %}
-    <interserver_http_host>{{ clickhouse_interserver_http_host }}</interserver_http_host>
-{% endif %}
+      -->    
+
+    <interserver_http_host>{{ inventory_hostname }}</interserver_http_host>
 
     <!-- Listen specified host. use :: (wildcard IPv6 address), if you want to accept connections both with IPv4 and IPv6 from everywhere. -->
     <!-- <listen_host>::</listen_host> -->

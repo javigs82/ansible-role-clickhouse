@@ -2,17 +2,25 @@
 - name: Prepare
   hosts: all
   tasks:
-    - name: Install epel-release
+    - name: Install epel-release RHEL
       yum:
         name: epel-release
         state: present
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
 
-    - name: Install nss-mdns
+    - name: Install nss-mdns RHEL
       yum:
         name: nss-mdns
         state: present
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
+
+    - name: Install libnss-mdns Install Debian
+      apt:
+        name: libnss-mdns
+        state: present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
     - name: Stop service cron on debian, if running
       systemd:
         name: avahi-daemon
-        state: started
+        state: restarted

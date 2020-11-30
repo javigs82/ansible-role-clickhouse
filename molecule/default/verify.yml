@@ -1,8 +1,6 @@
 ---
-# This is an example playbook to execute Ansible tests.
-
 - name: Verify
-  hosts: all
+  hosts: clickhouse
   gather_facts: false
   tasks:
     - name: Check ClickHouse service status
@@ -36,7 +34,9 @@
       changed_when: no
 
     - name: Create table
-      command: clickhouse-client --query "CREATE TABLE IF NOT EXISTS molecule_tests.insert_data(`id` UInt32, `City` String) ENGINE=TinyLog();"
+      command: >
+        clickhouse-client --query
+        "CREATE TABLE IF NOT EXISTS molecule_tests.insert_data(`id` UInt32, `City` String) ENGINE=TinyLog();"
       changed_when: no
 
     - name: Insert data into table, 1.
@@ -46,3 +46,42 @@
     - name: Insert data into table, 2.
       command: clickhouse-client --query "INSERT INTO molecule_tests.insert_data VALUES(33, 'Leon');"
       changed_when: no
+
+    - name: Create distributed database
+      command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS demo ON CLUSTER '{cluster}'"
+      changed_when: no
+      run_once: yes # to test distributed table
+
+    - name: Create local events
+      command: >
+        clickhouse-client --query
+        "CREATE TABLE IF NOT EXISTS demo.events_local ON CLUSTER '{cluster}'
+        (EventDate DateTime, CounterID UInt32, UserID UInt32)
+        ENGINE = ReplicatedMergeTree('/clickhouse/{cluster}/demo/tables/events/{shard}',
+        '{replica}') PARTITION BY toYYYYMM(EventDate) ORDER BY (CounterID, EventDate, intHash32(UserID))"
+      changed_when: no
+      run_once: yes # to test distributed table
+
+    - name: Create distributed events
+      command: >
+        clickhouse-client --query
+        "CREATE TABLE IF NOT EXISTS demo.events ON CLUSTER '{cluster}' AS demo.events_local
+        ENGINE = Distributed('{cluster}', 'demo', 'events_local', rand())"
+      changed_when: no
+      run_once: yes # to test distributed table
+
+    - name: Insert new distributed events
+      command: >
+        clickhouse-client --query
+        "INSERT INTO demo.events(EventDate, CounterID, UserID)
+        VALUES (now(), 1, 10), (now(), 2, 20), (now(), 3, 15), (now(), 4, 25)"
+      changed_when: no
+      run_once: yes # to test distributed table
+
+    - name: Select distributed events
+      command: >
+       clickhouse-client --query
+       "INSERT INTO demo.events(EventDate, CounterID, UserID)
+       VALUES (now(), 1, 10), (now(), 2, 20), (now(), 3, 15), (now(), 4, 25)"
+      changed_when: no
+      run_once: yes # to test distributed table

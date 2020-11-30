@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: clickhouse
   author: javigs82
   description: Clickhouse Cluster
   company: javigs82.me

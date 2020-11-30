@@ -1,5 +1,17 @@
 ---
-- name: Converge
+
+- name: Converge Zookeeper
+  hosts: zookeeper
+  tasks:
+    - name: "Include java role for zookeeper"
+      include_role:
+        name: "java"
+
+    - name: "Include ansible-role-zookeeper"
+      include_role:
+        name: "zookeeper"
+
+- name: Converge Clickhouse
   hosts: clickhouse
   tasks:
     - name: "Include ansible-role-clickhouse"

@@ -2,19 +2,19 @@
 <!-- {{ ansible_managed }} -->
 <yandex>
   <users>
-    <{{ item.user_name }}>
-    <profile>{{ item.profile }}</profile>
-    <networks>
-      {% for network in item.networks %}
-      <ip>{{ network }}</ip>
-      {% endfor %}
-    </networks>
-    {% if item.password is defined %}
-    <password_sha256_hex>{{ item.password | hash('sha256') }}</password_sha256_hex>
-    {% else %}
-    <password></password>
-    {% endif %}
-    <quota>{{ item.quota }}</quota>
+    <{{ item.user_name }} {{ item.attribute }}="{{ item.attribute }}">
+      <profile>{{ item.profile }}</profile>
+      <networks>
+        {% for network in item.networks %}
+        <ip>{{ network }}</ip>
+        {% endfor %}
+      </networks>
+      {% if item.password is defined %}
+      <password_sha256_hex>{{ item.password | hash('sha256') }}</password_sha256_hex>
+      {% else %}
+      <password></password>
+      {% endif %}
+      <quota>{{ item.quota }}</quota>
     </{{ item.user_name }}>
   </users>
 </yandex>

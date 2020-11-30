@@ -72,13 +72,136 @@ where **shardN.replicaN** is the hostname and **local** is the domain to be reso
 
 Check variables in [defaults](./defaults/main.yml)
 
- - version: set versions and allow downgrade
- - user/group: create custom user/group
- - yum support: add support for yum package
- - paths: create all directories
- - networking: in charge of cluster_nodes, shards and replicas
- - users: create main users
- - zookeeper: install zookeeper for synchronization
+### Version
+
+Use these variable to set up display_name, version and allow downgrade
+
+```yml
+
+clickhouse_version: "20.9.5.5"
+clickhouse_allow_downgrade: false
+clickhouse_display_name: "mycluster"
+
+```
+
+### Yum Support
+
+Use these variables to set up yum repository
+
+```yml
+
+clickhouse_supported: yes
+clickhouse_repo: "https://repo.clickhouse.tech/rpm/stable/x86_64/"
+clickhouse_repo_key: https://repo.clickhouse.tech//CLICKHOUSE-KEY.GPG
+clickhouse_package:
+  - "clickhouse-client-{{ clickhouse_version }}"
+  - "clickhouse-common-static-{{ clickhouse_version }}"
+  - "clickhouse-server-{{ clickhouse_version }}"
+
+```
+
+### Clickhouse Configuration
+
+With those variables, main configuration is set up.
+
+```yml
+
+clickhouse_config:
+  max_connections: 2048
+  keep_alive_timeout: 3
+  max_concurrent_queries: 100
+  uncompressed_cache_size: 8589934592
+  mark_cache_size: 5368709120
+  builtin_dictionaries_reload_interval: 3600
+  max_session_timeout: 3600
+  default_session_timeout: 60
+  mlock_status: false
+
+```
+
+### Cluster Configuration
+
+Cluster configuration relies on hostname and with that, 
+[macros.xml](./templates/macros.xml.j2) is dynamically built
+
+```yml
+
+clickhouse_cluster:
+  shard01:
+    - { host: "ch-shard01-replica01.local", port: "{{ clickhouse_tcp_port }}" }
+    - { host: "ch-shard01-replica02.local", port: "{{ clickhouse_tcp_port }}" }
+  shard02:
+    - { host: "ch-shard02-replica01.local", port: "{{ clickhouse_tcp_port }}" }
+    - { host: "ch-shard02-replica02.local", port: "{{ clickhouse_tcp_port }}" }
+
+```
+
+### Networking
+
+These variable are use to configure networking
+
+```yml
+
+clickhouse_http_port: 8123
+clickhouse_https_port: 8443
+clickhouse_tcp_port: 9000
+clickhouse_tcp_secure_port: 9440
+clickhouse_interserver_http: 9009
+clickhouse_networks_default:
+  - "::1"
+  - "127.0.0.1"
+clickhouse_listen_host_default:
+  - "::1"
+  - "127.0.0.1"
+clickhouse_listen_host_custom: []
+clickhouse_listen_host: "{{ clickhouse_listen_host_default + clickhouse_listen_host_custom }}"
+
+```
+
+### Users
+
+Use these vars to customize users. In order to remove a user use clickhouse config attributes:
+https://clickhouse.tech/docs/en/operations/configuration-files/
+
+```yml
+
+clickhouse_user_list:
+  - { user_name: "reader",
+      profile: "readonly",
+      password: "r3ad3R",
+      networks: ["::/0"],
+      quota: "default",
+      attribute: "replace" }
+  - { user_name: "jaimito",
+      profile: "default",
+      password: "J4imit0",
+      networks: ["::/0"],
+      quota: "default",
+      attribute: "replace"  }
+  - { user_name: "default",
+      profile: "default",
+      networks: ["::1", "127.0.0.1"],
+      quota: "default",
+      attribute: "replace" }
+  - { user_name: "luis",
+      profile: "default",
+      password: "enr1Que",
+      networks: ["::1", "127.0.0.1"],
+      quota: "default",
+      attribute: "remove" }
+
+```
+
+### Zookeper
+
+In order to use zookeeper to synchronize the cluster, set up zookeeper servers as following
+
+```yml
+
+clickhouse_zookeeper_nodes:
+  - { host: "zookeeper01.local", port: "2181" }
+
+```
 
 ## Dependencies
 

@@ -58,32 +58,43 @@ clickhouse_cluster:
   shard01:
     - { host: "ch-shard01-replica01.local", port: "{{ clickhouse_tcp_port }}" }
     - { host: "ch-shard01-replica02.local", port: "{{ clickhouse_tcp_port }}" }
-  shard02:
-    - { host: "ch-shard02-replica01.local", port: "{{ clickhouse_tcp_port }}" }
-    - { host: "ch-shard02-replica02.local", port: "{{ clickhouse_tcp_port }}" }
+  # shard02:
+  #   - { host: "ch-shard02-replica01.local", port: "{{ clickhouse_tcp_port }}" }
+  #   - { host: "ch-shard02-replica02.local", port: "{{ clickhouse_tcp_port }}" }
 
 # zookeeper is not at all mandatory
-clickhouse_zookeeper_nodes: []
+clickhouse_zookeeper_nodes:
+  - { host: "zookeeper01.local", port: "2181" }
 
 # ch tree
 clickhouse_merge_tree_config: []
 
-# ch users
+# ch users: https://clickhouse.tech/docs/en/operations/configuration-files/
 clickhouse_user_list:
   - { user_name: "reader",
       profile: "readonly",
       password: "r3ad3R",
       networks: ["::/0"],
-      quota: "default" }
+      quota: "default",
+      attribute: "replace" }
   - { user_name: "javito",
       profile: "default",
       password: "J4v1t0",
       networks: ["::/0"],
-      quota: "default" }
+      quota: "default",
+      attribute: "replace" }
   - { user_name: "default",
       profile: "default",
       networks: ["::1", "127.0.0.1"],
-      quota: "default" }
+      quota: "default",
+      attribute: "replace" }
+  - { user_name: "luis",
+      profile: "default",
+      password: "enr1Que",
+      networks: ["::1", "127.0.0.1"],
+      quota: "default",
+      attribute: "remove" }
+
 
 # ch logger
 clickhouse_logger:
