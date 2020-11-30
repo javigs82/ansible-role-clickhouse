@@ -24,7 +24,6 @@ Install
 ```sh
 
 pip3 install molecule[docker]
-pip3 install testinfra
 pip3 install debops
 pip3 install netaddr
 pip3 install future

@@ -147,16 +147,16 @@ clickhouse_https_port: 8443
 clickhouse_tcp_port: 9000
 clickhouse_tcp_secure_port: 9440
 clickhouse_interserver_http: 9009
-clickhouse_networks_default:
-  - "::1"
-  - "127.0.0.1"
+
 clickhouse_listen_host_default:
   - "::1"
-  - "127.0.0.1"
+  - "0.0.0.0"
 clickhouse_listen_host_custom: []
 clickhouse_listen_host: "{{ clickhouse_listen_host_default + clickhouse_listen_host_custom }}"
 
 ```
+
+**Notice** that `clickhouse_listen_host` must allow ch members listening
 
 ### Users
 
