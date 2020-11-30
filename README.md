@@ -84,18 +84,15 @@ Check variables in [defaults](./defaults/main.yml)
 
 ## Dependencies
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+`Clickhouse` depends on `Zookeeper` to archive **consistency**
 
 ## Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
+    - hosts: clickhouse
       roles:
-         - { role: username.rolename, x: 42 }
-
-## TODO
- - macros: implement shard name if exists in replicas
+         - { role: javigs82.clickhouse, clickhouse_display_name: "e-commerce" }
 
 ## References
 
