@@ -97,6 +97,11 @@ Including an example of how to use your role (for instance, with variables passe
 ## TODO
  - macros: implement shard name if exists in replicas
 
+## References
+
+ - https://clickhouse.tech/docs/en/getting-started
+ - https://docs.ansible.com/
+
 ## Author
 
 * javigs82 [github](https://github.com/javigs82/)

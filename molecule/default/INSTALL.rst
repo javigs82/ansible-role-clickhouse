@@ -4,13 +4,13 @@ Molecule installation guide
 
 Requirements
 ============
+* Vagrant with virtual box (see https://www.vagrantup.com/intro)
 * ansible => 2.7
 * python3
 * pip3
 * Molecule (see https://molecule.readthedocs.io/en/latest/installation.html) 
 * Testinfra (see https://testinfra.readthedocs.io/en/latest/)
 
-**Note** that molecule & testinfra have some issues over python 2.
 
 Install
 =======

@@ -8,8 +8,8 @@ driver:
 platforms:
   - name: ch-shard01-replica01
     box: centos/7
-    memory: 4096
-    cpus: 2
+    memory: 2048
+    cpus: 1
     hostname: ch-shard01-replica01
     interfaces:
       - network_name: private_network
@@ -22,12 +22,40 @@ platforms:
       ssh.remote_user: "'vagrant'"
   - name: ch-shard01-replica02
     box: centos/7
-    memory: 4096
-    cpus: 2
+    memory: 2048
+    cpus: 1
     hostname: ch-shard01-replica02
     interfaces:
       - network_name: private_network
         ip: 192.168.69.70
+        virtualbox__intnet: true
+    groups:
+      - clickhouse
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: "'vagrant'"
+  - name: ch-shard02-replica01
+    box: centos/7
+    memory: 2048
+    cpus: 1
+    hostname: ch-shard02-replica01
+    interfaces:
+      - network_name: private_network
+        ip: 192.168.69.72
+        virtualbox__intnet: true
+    groups:
+      - clickhouse
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: "'vagrant'"
+  - name: ch-shard02-replica02
+    box: centos/7
+    memory: 2048
+    cpus: 1
+    hostname: ch-shard02-replica02
+    interfaces:
+      - network_name: private_network
+        ip: 192.168.69.73
         virtualbox__intnet: true
     groups:
       - clickhouse
