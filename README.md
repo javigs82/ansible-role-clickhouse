@@ -55,7 +55,7 @@ with `nss-mdns` and `avahi`, vagrant is able to resolve dns just like **<hostnam
  - Download: From yandex rpm repository. Downgrade is allowed by `clickhouse_allow_downgrade` property.
  - Config: Ensure `clickhouse` group & user. Ensure paths and config files
  - Install: Download and install by yum
- - Users: Dynamic list to manage users. Password are not implemented
+ - Users: Dynamic list to manage users. Password management is not implemented
  - RBAC: TO BE IMPLEMENTED
 
 ### Cluster configuration
@@ -192,7 +192,7 @@ clickhouse_user_list:
 
 ```
 
-### Zookeper
+### Zookeeper
 
 In order to use zookeeper to synchronize the cluster, set up zookeeper servers as following
 
@@ -205,7 +205,7 @@ clickhouse_zookeeper_nodes:
 
 ## Dependencies
 
-`Clickhouse` depends on `Zookeeper` to archive **consistency**
+`Clickhouse` depends on `Zookeeper` to achieve **consistency**
 
 ## Example Playbook
 
@@ -224,7 +224,7 @@ Including an example of how to use your role (for instance, with variables passe
 
 * javigs82 [github](https://github.com/javigs82/)
 
-### Acknowledges
+### Acknowledgments
 
  - https://github.com/AlexeySetevoi/ansible-clickhouse
  - https://github.com/nl2go/ansible-role-clickhouse
