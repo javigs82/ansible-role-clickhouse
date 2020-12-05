@@ -10,11 +10,12 @@ driver:
   provider:
     name: virtualbox
 platforms:
+  # it is the inventory hostname. Must be resolved in internal network. See prepare.yml
   - name: zookeeper01.local
     box: ubuntu/bionic64
     memory: 2048
     cpus: 1
-    hostname: zookeeper01.local
+    hostname: zookeeper01
     interfaces:
       - network_name: private_network
         ip: 192.168.69.60
@@ -24,11 +25,11 @@ platforms:
     config_options:
       ssh.keep_alive: yes
       ssh.remote_user: "'vagrant'"
-  - name: ch-shard01-replica01.local
+  - name: ch01-shard01-replica01.local
     box: centos/7
     memory: 2048
     cpus: 1
-    hostname: ch-shard01-replica01.local
+    hostname: ch01-shard01-replica01
     interfaces:
       - network_name: private_network
         ip: 192.168.69.69
@@ -38,25 +39,25 @@ platforms:
     config_options:
       ssh.keep_alive: yes
       ssh.remote_user: "'vagrant'"
-  - name: ch-shard01-replica02.local
-    box: centos/7
-    memory: 2048
-    cpus: 1
-    hostname: ch-shard01-replica02.local
-    interfaces:
-      - network_name: private_network
-        ip: 192.168.69.70
-        virtualbox__intnet: true
-    groups:
-      - clickhouse
-    config_options:
-      ssh.keep_alive: yes
-      ssh.remote_user: "'vagrant'"
+  # - name: ch-shard01-replica02.local
+  #   box: centos/7
+  #   memory: 2048
+  #   cpus: 1
+  #   hostname: ch-shard01-replica02
+  #   interfaces:
+  #     - network_name: private_network
+  #       ip: 192.168.69.70
+  #       virtualbox__intnet: true
+  #   groups:
+  #     - clickhouse
+  #   config_options:
+  #     ssh.keep_alive: yes
+  #     ssh.remote_user: "'vagrant'"
   # - name: ch-shard02-replica01.local
   #   box: centos/7
   #   memory: 2048
   #   cpus: 1
-  #   hostname: ch-shard02-replica01.local
+  #   hostname: ch-shard02-replica01
   #   interfaces:
   #     - network_name: private_network
   #       ip: 192.168.69.72
@@ -70,7 +71,7 @@ platforms:
   #   box: centos/7
   #   memory: 2048
   #   cpus: 1
-  #   hostname: ch-shard02-replica02.local
+  #   hostname: ch-shard02-replica02
   #   interfaces:
   #     - network_name: private_network
   #       ip: 192.168.69.73
@@ -85,6 +86,7 @@ provisioner:
   connection_options:
     ansible_ssh_user: vagrant
     ansible_become: true
+
 lint: |
   set -e
   yamllint .
