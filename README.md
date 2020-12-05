@@ -1,13 +1,14 @@
 # Ansible Clickhouse
 
 This role is in charge of configuring & installing a clickhouse cluster with N shard and M replicas in `centos7`.
-It builds the cluster based in ansible inventory groups, so following groups are mandatory to run the cluster:
 
- - clickhouse: contains all clickhouse inventory hosts. These host must set their hostname like: `ch01-shard01-replica01`
+It builds the cluster based in ansible inventory groups akka **inventory patterns**, so following groups are mandatory to run the cluster:
+
+ - **clickhouse**: contains all clickhouse inventory hosts. These host must set their hostname like: `ch01-shard01-replica01`
  with regex like: `^ch\\d{2}-shard\\d{2}-replica\\d{2}`
- - zookeeper: contains all zookeeper inventory hosts. These hosts must set hostname like: `zookeeper01`
+ - **zookeeper**: contains all zookeeper inventory hosts. These hosts must set hostname like: `zookeeper01`
 
-Take a look into [macros.xml](./templates/macros.xml.j2) to check how shard is being calculated in function of hostname: `clickhouse_shard_name`
+Take a look into [defaults](./defaults/main.yml) to check how shard and replicas is being calculated in function of hostnames: 
 
 **Note** that `{{ inventory_hostname }}` is the DNS or IP address while `{{ ansible_hostname }}` is the hostname of the machine.
 
@@ -23,7 +24,6 @@ Please install following package to use `molecule` as TDD tool
 
 python3 -m pip install --user "molecule[vagrant,lint]"
 pip3 install testinfra
-
 
 ```
 
@@ -69,13 +69,16 @@ Cluster replica hostname must be defined as following:
 
 > chX-shardY-replicaZ where regex is `^ch\\d{2}-shard\\d{2}-replica\\d{2}`
 
-where **chX-shardY-replicaZ** is the hostname. Notice that this role implements vagrant-molecule and use special configuration to use service discovery. [Click here for more info](./molecule/default/prepare.yml)
+where **chX-shardY-replicaZ** is the hostname. Notice that this role implements vagrant-molecule and use 
+special configuration to use service discovery. [Click here for more info](./molecule/default/prepare.yml)
 
 **Notice** that the `OS hostname`  is not the same than `inventory_hostname`:
- - OS hostname: It is the name of the host. `hostname`
- - inventory_hostname: It is the URL (IP or DNS) of the host. URL must be resolved in order than cluster can communicate its nodes
+ - OS hostname: It is the name of the host: `{{ ansible_hostname }}`
+ - inventory_hostname: It is the URL (IP or DNS) of the host.
+ URL must be resolved in order than cluster can communicate its nodes: `{{ inventory_hostname }}`
 
-Inventory hostname will be use to discover replicas and for enabling communications. Also, by its 
+
+`{{ ansible_hostname }}` will be used for discovering replicas while `{{ inventory_hostname}}` for enabling communications. 
 
 ```INI
 [clickhouse]
@@ -93,7 +96,7 @@ Inventory hostname will be use to discover replicas and for enabling communicati
 <URL-zookeeperN> ansible_ssh=<ip>
 
 ```
-where URL is can be the IP or the DNS that will be resolved in runtime.
+where URL (inventory_hostname) can be the IP or the DNS that will be resolved in runtime.
 
 Notice that in order to build the cluster, `clickhouse` group and `zookeeper` group are mandatory
 
@@ -112,16 +115,24 @@ Check variables in [defaults](./defaults/main.yml)
 
 ### Cluster Definition
 
-Use these variable to set up the main definition. Notice that cluster configuration relies on hostname and with that, 
-[macros.xml](./templates/macros.xml.j2) is dynamically built based on regex
-
+Use these variable to set up the main definition. 
+Notice that cluster configuration relies on hostname and with that, `clickhouse_replica_name` and `clickhouse_shard_name`
+take relevance while `clickhouse_shard_regex` is the regex of the hostname definition: `^ch\\d{2}-(shard\\d{2})-replica\\d{2}`
 
 ```yml
 
+# clickhouse cluster definition
 clickhouse_version: "20.9.5.5"
 clickhouse_allow_downgrade: false
 clickhouse_display_name: "mycluster"
-clickhouse_shard_name: "{{ ansible_hostname | regex_search('^ch\\d{2}-(shard\\d{2})-replica\\d{2}', '\\1') | first }}"
+# replica name is the inventory name and must be resolved by IP or DN
+clickhouse_replica_name: "{{ inventory_hostname }}"
+# replica list are all host of a group
+clickhouse_replica_list: "{{ groups['clickhouse'] }}"
+# sharding is based on hostname, so we need a regex to obtain the proper shard. It is supposed to be prepared in the hosts
+clickhouse_shard_regex: "^ch\\d{2}-(shard\\d{2})-replica\\d{2}"
+clickhouse_shard_name: "{{ ansible_hostname | regex_search(clickhouse_shard_regex, '\\1') | first }}"
+clickhouse_shard_list: "{{ clickhouse_replica_list | map('extract', hostvars, 'ansible_hostname') | map('regex_search', clickhouse_shard_regex, '\\1') | map ('first') }}"
 
 ```
 
@@ -219,7 +230,7 @@ clickhouse_user_list:
 
 ### Zookeeper
 
-Zookerper host list is based on inventory groups pattern
+Zookeeper host list is based on inventory groups pattern
 
 ```yml
 
@@ -240,6 +251,11 @@ Including an example of how to use your role (for instance, with variables passe
     - hosts: clickhouse
       roles:
          - { role: javigs82.ansible_role_clickhouse, clickhouse_display_name: "e-commerce" }
+
+## Drawbacks
+
+ - `molecule idempotence` fails because zookeeper which is 3rd party. Ensuring clickhouse `idempotence` is
+ a manual process right now.
 
 ## References
 
