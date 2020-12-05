@@ -39,25 +39,25 @@ platforms:
     config_options:
       ssh.keep_alive: yes
       ssh.remote_user: "'vagrant'"
-  # - name: ch-shard01-replica02.local
+  - name: ch01-shard01-replica02.local
+    box: centos/7
+    memory: 2048
+    cpus: 1
+    hostname: ch01-shard01-replica02
+    interfaces:
+      - network_name: private_network
+        ip: 192.168.69.70
+        virtualbox__intnet: true
+    groups:
+      - clickhouse
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: "'vagrant'"
+  # - name: ch01-shard02-replica01.local
   #   box: centos/7
   #   memory: 2048
   #   cpus: 1
-  #   hostname: ch-shard01-replica02
-  #   interfaces:
-  #     - network_name: private_network
-  #       ip: 192.168.69.70
-  #       virtualbox__intnet: true
-  #   groups:
-  #     - clickhouse
-  #   config_options:
-  #     ssh.keep_alive: yes
-  #     ssh.remote_user: "'vagrant'"
-  # - name: ch-shard02-replica01.local
-  #   box: centos/7
-  #   memory: 2048
-  #   cpus: 1
-  #   hostname: ch-shard02-replica01
+  #   hostname: ch01-shard02-replica01
   #   interfaces:
   #     - network_name: private_network
   #       ip: 192.168.69.72
@@ -67,11 +67,11 @@ platforms:
   #   config_options:
   #     ssh.keep_alive: yes
   #     ssh.remote_user: "'vagrant'"
-  # - name: ch-shard02-replica02.local
+  # - name: ch01-shard02-replica02.local
   #   box: centos/7
   #   memory: 2048
   #   cpus: 1
-  #   hostname: ch-shard02-replica02
+  #   hostname: ch01-shard02-replica02
   #   interfaces:
   #     - network_name: private_network
   #       ip: 192.168.69.73
