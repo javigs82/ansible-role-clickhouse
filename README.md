@@ -219,12 +219,13 @@ clickhouse_user_list:
 
 ### Zookeeper
 
-In order to use zookeeper to synchronize the cluster, set up zookeeper servers as following
+Zookerper host list is based on inventory groups pattern
 
 ```yml
 
-clickhouse_zookeeper_nodes:
-  - { host: "zookeeper01.local", port: "2181" }
+# zookeeper is not at all mandatory. If zookeeper is not installed, replication must be accomplished by the client side
+clickhouse_zookeeper_list: "{{ groups['zookeeper'] }}"
+clickhouse_zookeeper_port: "2181"
 
 ```
 

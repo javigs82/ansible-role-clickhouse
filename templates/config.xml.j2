@@ -61,7 +61,7 @@
          This setting could be used to switch replication to another network interface.
       -->    
 
-    <interserver_http_host>{{ inventory_hostname }}</interserver_http_host>
+    <interserver_http_host>{{ clickhouse_replica_name }}</interserver_http_host>
 
     <!-- Listen specified host. use :: (wildcard IPv6 address), if you want to accept connections both with IPv4 and IPv6 from everywhere. -->
     <!-- <listen_host>::</listen_host> -->

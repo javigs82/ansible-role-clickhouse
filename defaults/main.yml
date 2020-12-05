@@ -3,8 +3,15 @@
 clickhouse_version: "20.9.5.5"
 clickhouse_allow_downgrade: false
 clickhouse_display_name: "mycluster"
+# replica name is the inventory name and must be resolved by IP or DN
+clickhouse_replica_name: "{{ inventory_hostname }}"
+# replica list are all host of a group
+clickhouse_replica_list: "{{ groups['clickhouse'] }}"
+
 # sharding is based on hostname, so we need a regex to obtain the proper shard. It is supposed to be prepared in the hosts
-clickhouse_shard_name: "{{ ansible_hostname | regex_search('^ch\\d{2}-(shard\\d{2})-replica\\d{2}', '\\1') | first }}"
+clickhouse_shard_regex: "^ch\\d{2}-(shard\\d{2})-replica\\d{2}"
+clickhouse_shard_name: "{{ ansible_hostname | regex_search(clickhouse_shard_regex, '\\1') | first }}"
+clickhouse_shard_list: "{{ clickhouse_replica_list | map('extract', hostvars, 'ansible_hostname') | map('regex_search', clickhouse_shard_regex, '\\1') | map ('first') }}"
 
 # user/group
 clickhouse_group: clickhouse
@@ -56,7 +63,9 @@ clickhouse_listen_host_custom: []
 clickhouse_listen_host: "{{ clickhouse_listen_host_default + clickhouse_listen_host_custom }}"
 
 # zookeeper is not at all mandatory. If zookeeper is not installed, replication must be accomplished by the client side
+clickhouse_zookeeper_list: "{{ groups['zookeeper'] }}"
 clickhouse_zookeeper_port: "2181"
+
 
 
 # ch users: https://clickhouse.tech/docs/en/operations/configuration-files/
@@ -75,7 +84,7 @@ clickhouse_user_list:
       attribute: "remove" }
   - { user_name: "default",
       profile: "default",
-      networks: ["::1", "127.0.0.1"],
+      networks: ["::/0"],
       quota: "default",
       attribute: "replace" }
   - { user_name: "luis",

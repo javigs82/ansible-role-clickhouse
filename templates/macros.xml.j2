@@ -4,6 +4,6 @@
     <macros>
         <cluster>{{ clickhouse_display_name | default('mycluster') }}</cluster>
         <shard>{{ clickhouse_shard_name }}</shard>
-        <replica>{{ inventory_hostname }}</replica>
+        <replica>{{ clickhouse_replica_name }}</replica>
     </macros>
 </yandex>
