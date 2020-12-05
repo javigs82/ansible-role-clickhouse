@@ -7,12 +7,12 @@
       <shard>
         <internal_replication>true</internal_replication>
 {% for replica in clickhouse_replica_list %}
-  {% if shard in replica %}
+{% if shard in replica %}
         <replica>
           <host>{{ replica }}</host>
           <port>{{ clickhouse_tcp_port }}</port>
         </replica>
-  {% endif %}
+{% endif %}
 {% endfor %}
       </shard>
 {% endfor %}

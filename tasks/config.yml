@@ -36,8 +36,8 @@
 
 - name: Config remote_servers
   template:
-    src: remote_servers.xml.j2
-    dest: "{{ clickhouse_path_config_d }}/clickhouse_remote_servers.xml"
+    src: remote-servers.xml.j2
+    dest: "{{ clickhouse_path_config_d }}/remote-servers.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
     mode: 0664
