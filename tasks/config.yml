@@ -60,4 +60,4 @@
     group: "{{ clickhouse_group }}"
     mode: 0664
   notify: restart-ch
-  when: clickhouse_zookeeper_nodes is defined
+  when: groups['zookeeper'] is defined and (groups['zookeeper'] | length > 0)

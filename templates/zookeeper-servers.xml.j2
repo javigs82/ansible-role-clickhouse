@@ -2,12 +2,11 @@
 <!-- {{ ansible_managed }} -->
 <yandex>
   <zookeeper>
-{% for server in clickhouse_zookeeper_nodes %}
+{% for host in groups['zookeeper'] %}
     <node index="{{loop.index}}">
-{% for key, value in server.items() %}
-      <{{ key }}>{{ value }}</{{ key }}>
+      <host>{{ host }}</host>
+      <port>{{ clickhouse_zookeeper_port }}</port>
 {% endfor %}
     </node>
-{% endfor %}
   </zookeeper>
 </yandex>

@@ -1,12 +1,27 @@
 ---
-# version
+# clickhouse cluster definition
 clickhouse_version: "20.9.5.5"
 clickhouse_allow_downgrade: false
 clickhouse_display_name: "mycluster"
+# sharding is based on hostname, so we need a regex to obtain the proper shard. It is supposed to be prepared in the hosts
+clickhouse_shard_name: "{{ ansible_hostname | regex_search('^ch\\d{2}-(shard\\d{2})-replica\\d{2}', '\\1') | first }}"
 
 # user/group
 clickhouse_group: clickhouse
 clickhouse_user: clickhouse
+
+# ch config
+clickhouse_config:
+  max_connections: 2048
+  keep_alive_timeout: 3
+  max_concurrent_queries: 100
+  uncompressed_cache_size: 8589934592
+  mark_cache_size: 5368709120
+  builtin_dictionaries_reload_interval: 3600
+  max_session_timeout: 3600
+  default_session_timeout: 60
+  mlock_status: false
+  merge_tree_config: []
 
 # yum support 
 clickhouse_supported: yes
@@ -36,36 +51,13 @@ clickhouse_interserver_http: 9009
 clickhouse_listen_host_default:
   - "::1"
   - "0.0.0.0"
+
 clickhouse_listen_host_custom: []
 clickhouse_listen_host: "{{ clickhouse_listen_host_default + clickhouse_listen_host_custom }}"
 
-# ch config
-clickhouse_config:
-  max_connections: 2048
-  keep_alive_timeout: 3
-  max_concurrent_queries: 100
-  uncompressed_cache_size: 8589934592
-  mark_cache_size: 5368709120
-  builtin_dictionaries_reload_interval: 3600
-  max_session_timeout: 3600
-  default_session_timeout: 60
-  mlock_status: false
+# zookeeper is not at all mandatory. If zookeeper is not installed, replication must be accomplished by the client side
+clickhouse_zookeeper_port: "2181"
 
-# ch cluster definition. Map of shards, replicas
-clickhouse_cluster:
-  shard01:
-    - { host: "ch-shard01-replica01.local", port: "{{ clickhouse_tcp_port }}" }
-    - { host: "ch-shard01-replica02.local", port: "{{ clickhouse_tcp_port }}" }
-  # shard02:
-  #   - { host: "ch-shard02-replica01.local", port: "{{ clickhouse_tcp_port }}" }
-  #   - { host: "ch-shard02-replica02.local", port: "{{ clickhouse_tcp_port }}" }
-
-# zookeeper is not at all mandatory
-clickhouse_zookeeper_nodes:
-  - { host: "zookeeper01.local", port: "2181" }
-
-# ch tree
-clickhouse_merge_tree_config: []
 
 # ch users: https://clickhouse.tech/docs/en/operations/configuration-files/
 clickhouse_user_list:
@@ -92,7 +84,6 @@ clickhouse_user_list:
       networks: ["::1", "127.0.0.1"],
       quota: "default",
       attribute: "remove" }
-
 
 # ch logger
 clickhouse_logger:

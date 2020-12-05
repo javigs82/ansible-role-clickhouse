@@ -3,11 +3,7 @@
 <yandex>
     <macros>
         <cluster>{{ clickhouse_display_name | default('mycluster') }}</cluster>
-{% for shard_name, replicas in clickhouse_cluster.items() | list %}
-{% if shard_name in inventory_hostname %}
-        <shard>{{ shard_name }}</shard>
-{% endif %}
-{% endfor %}
+        <shard>{{ clickhouse_shard_name }}</shard>
         <replica>{{ inventory_hostname }}</replica>
     </macros>
 </yandex>

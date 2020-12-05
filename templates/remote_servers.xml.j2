@@ -3,17 +3,15 @@
 <yandex>
   <remote_servers>
     <{{ clickhouse_display_name }}>
-{% for shard_name, replicas in clickhouse_cluster.items() | list %}
       <shard>
         <internal_replication>true</internal_replication>
-{% for replica in replicas %}
+{% for replica in groups['clickhouse'] %}
         <replica>
-          <host>{{ replica['host'] }}</host>
-          <port>{{ replica['port'] }}</port>
+          <host>{{ replica }}</host>
+          <port>{{ clickhouse_tcp_port }}</port>
         </replica>
 {% endfor %}
       </shard>
-{% endfor %}
     </{{ clickhouse_display_name }}>
   </remote_servers>
 </yandex>
