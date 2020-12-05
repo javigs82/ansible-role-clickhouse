@@ -249,7 +249,7 @@
     {% if clickhouse.merge_tree_config is defined %}
         <merge_tree>
             {% for config in clickhouse.merge_tree_config %}
-                <{{ config }}>{{ clickhouse_merge_tree_config[config] }}</{{ config }}>
+                <{{ config }}>{{ clickhouse.merge_tree_config[config] }}</{{ config }}>
             {% endfor %}
         </merge_tree>
     {% endif %}
