@@ -5,15 +5,15 @@
     <{{ item.user_name }} {{ item.attribute }}="{{ item.attribute }}">
       <profile>{{ item.profile }}</profile>
       <networks>
-        {% for network in item.networks %}
+      {% for network in item.networks %}
         <ip>{{ network }}</ip>
-        {% endfor %}
+      {% endfor %}
       </networks>
-      {% if item.password is defined %}
+        {% if item.password is defined %}
       <password_sha256_hex>{{ item.password | hash('sha256') }}</password_sha256_hex>
-      {% else %}
+        {% else %}
       <password></password>
-      {% endif %}
+        {% endif %}
       <quota>{{ item.quota }}</quota>
     </{{ item.user_name }}>
   </users>
