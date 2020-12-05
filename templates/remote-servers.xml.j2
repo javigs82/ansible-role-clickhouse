@@ -7,7 +7,7 @@
       <shard>
         <internal_replication>true</internal_replication>
 {% for replica in clickhouse_replica_list %}
-{% if shard in replica %}
+{% if shard in hostvars[replica].ansible_hostname  %}
         <replica>
           <host>{{ replica }}</host>
           <port>{{ clickhouse_tcp_port }}</port>

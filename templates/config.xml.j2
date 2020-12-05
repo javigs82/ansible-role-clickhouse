@@ -61,7 +61,7 @@
          This setting could be used to switch replication to another network interface.
       -->    
 
-    <interserver_http_host>{{ clickhouse_replica_name }}</interserver_http_host>
+    <interserver_http_host>{{ inventory_hostname }}</interserver_http_host>
 
     <!-- Listen specified host. use :: (wildcard IPv6 address), if you want to accept connections both with IPv4 and IPv6 from everywhere. -->
     <!-- <listen_host>::</listen_host> -->
@@ -249,7 +249,7 @@
     {% if clickhouse.merge_tree_config is defined %}
         <merge_tree>
             {% for config in clickhouse.merge_tree_config %}
-                <{{ config }}>{{ clickhouse.merge_tree_config[config] }}</{{ config }}>
+                <{{ config }}>{{ clickhouse_merge_tree_config[config] }}</{{ config }}>
             {% endfor %}
         </merge_tree>
     {% endif %}
