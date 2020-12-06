@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2020-12-05
+### Add
+- Improve docu and variable precedence. Complete changelog
+- Move some defaults to vars for consistency
+
+## [1.2.2] - 2020-12-05
+### Fix
+- How remote-server.xml.j2 is built has been fixed
+
+## [1.2.1] - 2020-12-05
+### Fix
+- Set proper remote server configuration
+
 ## [1.2.0] - 2020-12-04
 ### Added
 - Set cluster based on ansible inventory patterns and regex: All built on top of hostname

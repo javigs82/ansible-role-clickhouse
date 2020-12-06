@@ -21,11 +21,6 @@ In order to install `Zookeeper`, this scenario uses ansible galaxy
 
 Install
 =======
-```sh
 
-pip3 install molecule[docker]
-pip3 install debops
-pip3 install netaddr
-pip3 install future
-
-```
+* pip3 install molecule[vagrant,lint]
+* pip3 install testinfra
