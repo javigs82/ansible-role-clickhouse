@@ -3,7 +3,7 @@
 <yandex>
   <zookeeper>
 {% for host in clickhouse_zookeeper_list %}
-    <node index="{{loop.index}}">
+    <node index="{{ loop.index }}">
       <host>{{ host }}</host>
       <port>{{ clickhouse_zookeeper_port }}</port>
 {% endfor %}

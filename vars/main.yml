@@ -1,2 +1,10 @@
 ---
-# vars file for ansible-role-clickhouse-cluster
+# this regex is the key of how discover and relate replicas with shards.
+clickhouse_hostname_regex: "^ch\\d{2}-(shard\\d{2})-replica\\d{2}"
+
+# replica name is the inventory hostname and must be resolved by IP or DN
+clickhouse_replica_name: "{{ inventory_hostname }}"
+
+clickhouse_shard_name: "{{ ansible_hostname | regex_search(clickhouse_hostname_regex, '\\1') | first }}"
+# shard list is calculated by replica list which must accomplish with regex: clickhouse_hostname_regex
+clickhouse_shard_list: "{{ clickhouse_replica_list | map('extract', hostvars, 'ansible_hostname') | map('regex_search', clickhouse_hostname_regex, '\\1') | unique | map ('first') }}"
