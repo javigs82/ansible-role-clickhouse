@@ -5,7 +5,7 @@ At this moment only `centos7` is implemented.
 
 The cluster is built based on ansible inventory groups aka **inventory patterns**, so following groups are mandatory to run the cluster:
 
- - **clickhouse**: contains all clickhouse inventory hosts. These host must set their hostname like: `ch01-shard01-replica01`
+ - **clickhouse**: contains all clickhouse inventory hosts. These hosts must set their hostname like: `ch01-shard01-replica01`
  with regex like: `^ch\\d{2}-shard\\d{2}-replica\\d{2}`
  - **zookeeper**: contains all zookeeper inventory hosts.
 
@@ -174,7 +174,7 @@ clickhouse_package:
 
 ### Networking
 
-These variable are use to configure networking
+These variable are related to networking configuration
 
 ```yml
 
