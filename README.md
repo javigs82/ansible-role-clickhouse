@@ -3,7 +3,7 @@
 This role is in charge of configuring & installing a clickhouse cluster with N shard and M replicas. 
 At this moment only `centos7` is implemented.
 
-The cluster is built based on ansible inventory groups akka **inventory patterns**, so following groups are mandatory to run the cluster:
+The cluster is built based on ansible inventory groups aka **inventory patterns**, so following groups are mandatory to run the cluster:
 
  - **clickhouse**: contains all clickhouse inventory hosts. These host must set their hostname like: `ch01-shard01-replica01`
  with regex like: `^ch\\d{2}-shard\\d{2}-replica\\d{2}`
@@ -244,6 +244,9 @@ clickhouse_zookeeper_port: "2181"
 
 They are variables that are greatest than defaults and inventory groups vars. They can only be overridden by some higher precedence, but normally they are not.
 
+Notice that cluster configuration relies on hostname and with that, `clickhouse_replica_name` and `clickhouse_shard_name`
+take relevance while `clickhouse_hostname_regex` is the regex of the hostname definition: `^ch\\d{2}-(shard\\d{2})-replica\\d{2}` See [vars](./vars/defaults.yml) for more info.
+
 Check variables in [vars](./vars/main.yml)
 
 ```yml
@@ -274,7 +277,7 @@ Following tags are supported in this role:
 
 ## Example Playbook
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Including an example of how to use the rol
 
 ``` yml
 
