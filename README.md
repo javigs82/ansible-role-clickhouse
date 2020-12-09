@@ -7,7 +7,7 @@ The cluster is built based on ansible inventory groups akka **inventory patterns
 
  - **clickhouse**: contains all clickhouse inventory hosts. These host must set their hostname like: `ch01-shard01-replica01`
  with regex like: `^ch\\d{2}-shard\\d{2}-replica\\d{2}`
- - **zookeeper**: contains all zookeeper inventory hosts. These hosts must set hostname like: `zookeeper01`
+ - **zookeeper**: contains all zookeeper inventory hosts.
 
 Take a look into [defaults](./defaults/main.yml) to check how shard and replicas is being calculated in function of hostnames: 
 
