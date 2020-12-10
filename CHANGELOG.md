@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2020-12-10
+### Fix
+ - fix zookeeper config file
+ - replace systemctl by service
+
 ## [1.3.0] - 2020-12-05
 ### Add
 - Improve docu and variable precedence. Complete changelog

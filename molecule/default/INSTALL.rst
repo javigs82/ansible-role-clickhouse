@@ -24,3 +24,4 @@ Install
 
 * pip3 install molecule[vagrant,lint]
 * pip3 install testinfra
+* pip3 install netaddr
