@@ -130,7 +130,7 @@ take relevance while `clickhouse_hostname_regex` is the regex of the hostname de
 # clickhouse cluster definition
 clickhouse_version: "20.9.5.5"
 clickhouse_allow_downgrade: false
-clickhouse_display_name: "mycluster"
+clickhouse_cluster_name: "mycluster"
 # replica list are all host of a group
 clickhouse_replica_list: "{{ groups['clickhouse'] }}"
 
@@ -286,7 +286,7 @@ Including an example of how to use the rol
         - include_role:
             name: javigs82.clickhouse
           vars:
-            clickhouse_display_name: "e-commerce"
+            clickhouse_cluster_name: "e-commerce"
             clickhouse_replica_list: "{{ groups['my_clickhouse_group'] }}"
             clickhouse_zookeeper_list: "{{ groups['my_zookeeper_group'] }}"
 

@@ -2,7 +2,7 @@
 # clickhouse cluster definition
 clickhouse_version: "20.9.5.5"
 clickhouse_allow_downgrade: false
-clickhouse_display_name: "mycluster"
+clickhouse_cluster_name: "mycluster"
 # replica list are all host of a group
 clickhouse_replica_list: "{{ groups['clickhouse'] }}"
 # shard list are calculated by replica list. The must accomplish with regex: see clickhouse_hostname_regex in vars/main.yml
