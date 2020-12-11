@@ -46,10 +46,6 @@ clickhouse_tcp_port: 9000
 clickhouse_tcp_secure_port: 9440
 clickhouse_interserver_http: 9009
 
-clickhouse_listen_host_default:
-  - "{{ clickhouse_replica_name }}"
-  - "::1"
-
 clickhouse_listen_host_custom: []
 clickhouse_listen_host: "{{ clickhouse_listen_host_default + clickhouse_listen_host_custom }}"
 
@@ -63,25 +59,21 @@ clickhouse_users_list:
       profile: "readonly",
       password: "r3ad3R",
       networks: ["::/0"],
-      quota: "default",
-      attribute: "replace" }
+      quota: "default" }
   - { user_name: "javito",
       profile: "default",
       password: "javito",
       networks: ["::/0"],
-      quota: "default",
-      attribute: "remove" }
+      quota: "default" }
   - { user_name: "default",
       profile: "default",
       networks: ["::/0"],
-      quota: "default",
-      attribute: "replace" }
+      quota: "default" }
   - { user_name: "luis",
       profile: "default",
       password: "luis",
       networks: ["::1", "127.0.0.1"],
-      quota: "default",
-      attribute: "remove" }
+      quota: "default" }
 
 # ch logger
 clickhouse_logger:
