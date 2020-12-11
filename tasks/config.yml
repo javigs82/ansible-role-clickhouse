@@ -9,15 +9,13 @@
   with_items:
     - "{{ clickhouse_path_config }}"
     - "{{ clickhouse_path_config_d }}"
-    - "{{ clickhouse_path_data }}"
     - "{{ clickhouse_path_log }}"
-    - "{{ clickhouse_path_tmp }}"
   notify: restart-ch
 
 - name: Config system
   template:
-    src: config.xml.j2
-    dest: "{{ clickhouse_path_config }}/config.xml"
+    src: custom-config.xml.j2
+    dest: "{{ clickhouse_path_config_d }}/custom-config.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
     mode: 0664

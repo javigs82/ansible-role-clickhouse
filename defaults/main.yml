@@ -38,10 +38,6 @@ clickhouse_package:
 clickhouse_path_config: "/etc/clickhouse-server"
 clickhouse_path_config_d: "{{ clickhouse_path_config }}/config.d"
 clickhouse_path_log: "/var/log/clickhouse-server"
-clickhouse_path_base: "/var/lib"
-clickhouse_path_data: "{{ clickhouse_path_base }}/clickhouse/"
-clickhouse_path_tmp: "{{ clickhouse_path_base }}/clickhouse/tmp/"
-clickhouse_path_user_files: "{{ clickhouse_path_base }}/clickhouse/user_files/"
 
 # ch networking
 clickhouse_http_port: 8123
@@ -55,7 +51,6 @@ clickhouse_listen_host_default:
   - "::1"
 
 clickhouse_listen_host_custom: []
-# see vars for clickhouse_listen_host_default
 clickhouse_listen_host: "{{ clickhouse_listen_host_default + clickhouse_listen_host_custom }}"
 
 # zookeeper is not at all mandatory. If zookeeper is not installed, replication must be accomplished by the client side
