@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!-- {{ ansible_managed }} -->
+<yandex>
+    <logger>
+        <!-- Possible levels: https://github.com/pocoproject/poco/blob/develop/Foundation/include/Poco/Logger.h#L105 -->
+        <level>{{ clickhouse_logger.level }}</level>
+        <log>{{ clickhouse_logger.log }}</log>
+        <errorlog>{{ clickhouse_logger.errorlog }}</errorlog>
+        <size>{{ clickhouse_logger.size }}</size>
+        <count>{{ clickhouse_logger.count }}</count>
+    </logger>
+
+    <http_port>{{ clickhouse_http_port }}</http_port>
+    <tcp_port>{{ clickhouse_tcp_port }}</tcp_port>
+
+ <!-- if enabled, configure ecryption settings https://altinity.com/blog/2019/3/5/clickhouse-networking-part-2
+    <https_port>{{ clickhouse_https_port }}</https_port>
+    <tcp_port_secure>{{ clickhouse_tcp_secure_port }}</tcp_port_secure> -->
+
+    <interserver_http_port>{{ clickhouse_interserver_http }}</interserver_http_port>
+    <interserver_http_host>{{ clickhouse_replica_name }}</interserver_http_host>
+
+    <max_connections>{{ clickhouse_config.max_connections }}</max_connections>
+    <keep_alive_timeout>{{ clickhouse_config.keep_alive_timeout }}</keep_alive_timeout>
+
+    <!-- Maximum number of concurrent queries. -->
+    <max_concurrent_queries>{{ clickhouse_config.max_concurrent_queries }}</max_concurrent_queries>
+
+    <!-- Set limit on number of open files (default: maximum). This setting makes sense on Mac OS X because getrlimit() fails to retrieve
+         correct maximum value. -->
+    <!-- <max_open_files>262144</max_open_files> -->
+
+    <!-- Size of cache of uncompressed blocks of data, used in tables of MergeTree family.
+         In bytes. Cache is single for server. Memory is allocated only on demand.
+         Cache is used when 'use_uncompressed_cache' user setting turned on (off by default).
+         Uncompressed cache is advantageous only for very short queries and in rare cases.
+      -->
+    <uncompressed_cache_size>{{ clickhouse_config.uncompressed_cache_size }}</uncompressed_cache_size>
+
+    <!-- Approximate size of mark cache, used in tables of MergeTree family.
+         In bytes. Cache is single for server. Memory is allocated only on demand.
+         You should not lower this value.
+      -->
+    <mark_cache_size>{{ clickhouse_config.mark_cache_size }}</mark_cache_size>
+
+    <!-- Perform mlockall after startup to lower first queries latency
+          and to prevent clickhouse executable from being paged out under high IO load.
+         Enabling this option is recommended but will lead to increased startup time for up to a few seconds.
+    -->
+    <mlock_executable>{{ clickhouse_config.mlock_status }}</mlock_executable>
+
+    <!-- Reloading interval for embedded dictionaries, in seconds. Default: 3600. -->
+    <builtin_dictionaries_reload_interval>{{ clickhouse_config.builtin_dictionaries_reload_interval }}</builtin_dictionaries_reload_interval>
+
+    <!-- Maximum session timeout, in seconds. Default: 3600. -->
+    <max_session_timeout>{{ clickhouse_config.max_session_timeout }}</max_session_timeout>
+
+    <!-- Default session timeout, in seconds. Default: 60. -->
+    <default_session_timeout>{{ clickhouse_config.default_session_timeout }}</default_session_timeout>
+    <!-- Query log. Used only for queries with setting log_queries = 1. -->
+    <query_log>
+        <database>system</database>
+        <table>query_log</table>
+        <partition_by>toYYYYMM(event_date)</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </query_log>
+
+    <!-- Query thread log. Has information about all threads participated in query execution.
+         Used only for queries with setting log_query_threads = 1. -->
+    <query_thread_log>
+        <database>system</database>
+        <table>query_thread_log</table>
+        <partition_by>toYYYYMM(event_date)</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </query_thread_log>
+
+    <!-- Settings to fine tune MergeTree tables. See documentation in source code, in MergeTreeSettings.h -->
+{% if clickhouse.merge_tree_config is defined %}
+        <merge_tree>
+{% for config in clickhouse.merge_tree_config %}
+            <{{ config }}>{{ clickhouse.merge_tree_config[config] }}</{{ config }}>
+{% endfor %}
+        </merge_tree>
+{% endif %}
+</yandex>

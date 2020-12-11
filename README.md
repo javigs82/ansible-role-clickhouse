@@ -185,8 +185,9 @@ clickhouse_tcp_secure_port: 9440
 clickhouse_interserver_http: 9009
 
 clickhouse_listen_host_default:
+  - "{{ clickhouse_replica_name }}"
   - "::1"
-  - "0.0.0.0"
+
 clickhouse_listen_host_custom: []
 clickhouse_listen_host: "{{ clickhouse_listen_host_default + clickhouse_listen_host_custom }}"
 
