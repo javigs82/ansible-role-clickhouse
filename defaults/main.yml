@@ -51,10 +51,11 @@ clickhouse_tcp_secure_port: 9440
 clickhouse_interserver_http: 9009
 
 clickhouse_listen_host_default:
+  - "{{ clickhouse_replica_name }}"
   - "::1"
-  - "0.0.0.0"
 
 clickhouse_listen_host_custom: []
+# see vars for clickhouse_listen_host_default
 clickhouse_listen_host: "{{ clickhouse_listen_host_default + clickhouse_listen_host_custom }}"
 
 # zookeeper is not at all mandatory. If zookeeper is not installed, replication must be accomplished by the client side
@@ -62,7 +63,7 @@ clickhouse_zookeeper_list: "{{ groups['zookeeper'] }}"
 clickhouse_zookeeper_port: "2181"
 
 # ch users: https://clickhouse.tech/docs/en/operations/configuration-files/
-clickhouse_user_list:
+clickhouse_users_list:
   - { user_name: "reader",
       profile: "readonly",
       password: "r3ad3R",
