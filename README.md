@@ -184,11 +184,7 @@ clickhouse_tcp_port: 9000
 clickhouse_tcp_secure_port: 9440
 clickhouse_interserver_http: 9009
 
-clickhouse_listen_host_default:
-  - "{{ clickhouse_replica_name }}"
-  - "::1"
-
-clickhouse_listen_host_custom: []
+# see vars for clickhouse_listen_host_default
 clickhouse_listen_host: "{{ clickhouse_listen_host_default + clickhouse_listen_host_custom }}"
 
 ```
@@ -202,30 +198,26 @@ https://clickhouse.tech/docs/en/operations/configuration-files/
 
 ```yml
 
-clickhouse_user_list:
+clickhouse_users_list:
   - { user_name: "reader",
       profile: "readonly",
       password: "r3ad3R",
       networks: ["::/0"],
-      quota: "default",
-      attribute: "replace" }
-  - { user_name: "jaimito",
+      quota: "default" }
+  - { user_name: "javito",
       profile: "default",
-      password: "J4imit0",
+      password: "javito",
       networks: ["::/0"],
-      quota: "default",
-      attribute: "replace"  }
+      quota: "default" }
   - { user_name: "default",
       profile: "default",
-      networks: ["::1", "127.0.0.1"],
-      quota: "default",
-      attribute: "replace" }
+      networks: ["::/0"],
+      quota: "default" }
   - { user_name: "luis",
       profile: "default",
-      password: "enr1Que",
+      password: "luis",
       networks: ["::1", "127.0.0.1"],
-      quota: "default",
-      attribute: "remove" }
+      quota: "default" }
 
 ```
 
@@ -260,6 +252,11 @@ clickhouse_hostname_regex: "^ch\\d{2}-(shard\\d{2})-replica\\d{2}"
 clickhouse_shard_name: "{{ ansible_hostname | regex_search(clickhouse_hostname_regex, '\\1') | first }}"
 # shard list is calculated by replica list which must accomplish with regex: clickhouse_hostname_regex
 clickhouse_shard_list: "{{ clickhouse_replica_list | map('extract', hostvars, 'ansible_hostname') | map('regex_search', clickhouse_hostname_regex, '\\1') | unique | map ('first') }}"
+
+clickhouse_listen_host_default:
+  - "{{ clickhouse_replica_name }}"
+  - "127.0.0.1"
+  - "::1"
 
 ```
 

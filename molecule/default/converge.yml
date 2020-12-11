@@ -17,3 +17,8 @@
     - name: "Include ansible-role-clickhouse"
       include_role:
         name: "ansible-role-clickhouse"
+      vars:
+        # override because  clickhouse_replica_name is an alias of 127.0.0.1 because virtual box and libnss-mdns
+        clickhouse_listen_host_default:
+          - "{{ clickhouse_replica_name }}"
+          - "::1"
