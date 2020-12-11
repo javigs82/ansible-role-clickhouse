@@ -27,11 +27,10 @@
 - name: Config users
   template:
     src: users.xml.j2
-    dest: /etc/clickhouse-server/users.d/{{ item.user_name }}.xml
+    dest: /etc/clickhouse-server/users.d/users.xml
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
     mode: 0664
-  with_items: "{{ clickhouse_user_list }}"
   no_log: true
 
 - name: Config remote_servers

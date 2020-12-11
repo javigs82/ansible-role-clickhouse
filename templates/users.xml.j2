@@ -2,19 +2,21 @@
 <!-- {{ ansible_managed }} -->
 <yandex>
   <users>
-    <{{ item.user_name }} {{ item.attribute }}="{{ item.attribute }}">
-      <profile>{{ item.profile }}</profile>
+{% for user in clickhouse_users_list %}
+    <{{ user.user_name }}>
+      <profile>{{ user.profile }}</profile>
       <networks>
-      {% for network in item.networks %}
+{% for network in user.networks %}
         <ip>{{ network }}</ip>
-      {% endfor %}
+{% endfor %}
       </networks>
-        {% if item.password is defined %}
-      <password_sha256_hex>{{ item.password | hash('sha256') }}</password_sha256_hex>
-        {% else %}
+{% if user.password is defined %}
+      <password_sha256_hex>{{ user.password | hash('sha256') }}</password_sha256_hex>
+{% else %}
       <password></password>
-        {% endif %}
-      <quota>{{ item.quota }}</quota>
-    </{{ item.user_name }}>
+{% endif %}
+      <quota>{{ user.quota }}</quota>
+    </{{ user.user_name }}>
+{% endfor %}
   </users>
 </yandex>
