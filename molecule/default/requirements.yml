@@ -3,6 +3,6 @@
   version: 1.10.0
   name: java
 
-- src: idealista.zookeeper_role
-  version: 2.1.0
+- src: sleighzy.zookeeper
+  # version: 2.1.0
   name: zookeeper

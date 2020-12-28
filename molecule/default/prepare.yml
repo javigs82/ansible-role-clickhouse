@@ -20,7 +20,7 @@
         state: present
       when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-    - name: Stop service cron on debian, if running
-      systemd:
+    - name: Restart avahi-daemon
+      service:
         name: avahi-daemon
         state: restarted
