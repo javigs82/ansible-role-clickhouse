@@ -2,6 +2,7 @@
 - name: Verify
   hosts: clickhouse
   gather_facts: false
+  become: true
   tasks:
     - name: Check ClickHouse service status
       command: systemctl status clickhouse-server
@@ -30,34 +31,38 @@
           - query_result.stdout|length > 0
 
     - name: Create database
-      command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS molecule_tests"
+      command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS verify_test"
       changed_when: no
 
-    - name: Create table
+    - name: Create table verify_test
       command: >
         clickhouse-client --query
-        "CREATE TABLE IF NOT EXISTS molecule_tests.insert_data(`id` UInt32, `City` String) ENGINE=TinyLog();"
+        "CREATE TABLE IF NOT EXISTS verify_test.table_test(`id` UInt32, `City` String) ENGINE=TinyLog();"
       changed_when: no
 
     - name: Insert data into table, 1.
-      command: clickhouse-client --query "INSERT INTO molecule_tests.insert_data VALUES(11, 'Madrid');"
+      command: clickhouse-client --query "INSERT INTO verify_test.table_test VALUES(11, 'Madrid');"
       changed_when: no
 
     - name: Insert data into table, 2.
-      command: clickhouse-client --query "INSERT INTO molecule_tests.insert_data VALUES(33, 'Leon');"
+      command: clickhouse-client --query "INSERT INTO verify_test.table_test VALUES(33, 'Leon');"
+      changed_when: no
+
+    - name: Delete verify_test database.
+      command: clickhouse-client --query "DROP DATABASE verify_test;"
       changed_when: no
 
     - name: Create distributed database
-      command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS demo ON CLUSTER '{cluster}'"
+      command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS distribute ON CLUSTER '{cluster}'"
       changed_when: no
       run_once: yes # to test distributed table
 
     - name: Create local events
       command: >
         clickhouse-client --query
-        "CREATE TABLE IF NOT EXISTS demo.events_local ON CLUSTER '{cluster}'
+        "CREATE TABLE IF NOT EXISTS distribute.local_events ON CLUSTER '{cluster}'
         (EventDate DateTime, CounterID UInt32, UserID UInt32)
-        ENGINE = ReplicatedMergeTree('/clickhouse/{cluster}/demo/tables/events/{shard}',
+        ENGINE = ReplicatedMergeTree('/clickhouse/{cluster}/distribute/tables/events/{shard}',
         '{replica}') PARTITION BY toYYYYMM(EventDate) ORDER BY (CounterID, EventDate, intHash32(UserID))"
       changed_when: no
       run_once: yes # to test distributed table
@@ -65,23 +70,42 @@
     - name: Create distributed events
       command: >
         clickhouse-client --query
-        "CREATE TABLE IF NOT EXISTS demo.events ON CLUSTER '{cluster}' AS demo.events_local
-        ENGINE = Distributed('{cluster}', 'demo', 'events_local', rand())"
+        "CREATE TABLE IF NOT EXISTS distribute.events ON CLUSTER '{cluster}' AS distribute.local_events
+        ENGINE = Distributed('{cluster}', 'distribute', 'local_events', rand())"
       changed_when: no
       run_once: yes # to test distributed table
 
     - name: Insert new distributed events
       command: >
         clickhouse-client --query
-        "INSERT INTO demo.events(EventDate, CounterID, UserID)
+        "INSERT INTO distribute.events(EventDate, CounterID, UserID)
         VALUES (now(), 1, 10), (now(), 2, 20), (now(), 3, 15), (now(), 4, 25)"
       changed_when: no
       run_once: yes # to test distributed table
 
-    - name: Select distributed events
+    - name: Select local_events
       command: >
        clickhouse-client --query
-       "INSERT INTO demo.events(EventDate, CounterID, UserID)
-       VALUES (now(), 1, 10), (now(), 2, 20), (now(), 3, 15), (now(), 4, 25)"
+       "SELECT * FROM distribute.local_events FORMAT PrettyCompact"
+      changed_when: no
+      register: query_result
+
+    - name: Print query local_events
+      debug:
+        msg: "{{ query_result.stdout_lines }}"
+
+    - name: Select events
+      command: >
+       clickhouse-client --query
+       "SELECT * FROM distribute.events FORMAT PrettyCompact"
+      changed_when: no
+      register: query_result
+
+    - name: Print query events
+      debug:
+        msg: "{{ query_result.stdout_lines }}"
+
+    - name: DELETE distributed database
+      command: clickhouse-client --query "DROP DATABASE distribute ON CLUSTER '{cluster}'"
       changed_when: no
       run_once: yes # to test distributed table

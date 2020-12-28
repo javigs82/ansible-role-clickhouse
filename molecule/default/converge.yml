@@ -10,6 +10,10 @@
     - name: "Include ansible-role-zookeeper"
       include_role:
         name: "zookeeper"
+      vars:
+        zookeeper_servers: "{{ groups['zookeeper'] }}"
+        # assuming zookeeper regex hostname is 'zookeeper\d{2}'
+        zookeeper_id: "{{ ansible_hostname | regex_search('^zookeeper(\\d{2})', '\\1') | first }}"
 
 - name: Converge Clickhouse
   hosts: clickhouse
@@ -18,7 +22,8 @@
       include_role:
         name: "ansible-role-clickhouse"
       vars:
-        # override because  clickhouse_replica_name is an alias of 127.0.0.1 because virtual box and libnss-mdns
+        # override: set as 0.0.0.0 because clickhouse_replica_name is an alias of 127.0.0.1 in /etc/hosts due to libnss-mdns
+        # important: no set 0.0.0.0 in real world envs
         clickhouse_listen_host_default:
-          - "{{ clickhouse_replica_name }}"
           - "::1"
+          - "0.0.0.0"

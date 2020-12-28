@@ -2,7 +2,7 @@
 <!-- {{ ansible_managed }} -->
 <yandex>
 {% for host in clickhouse_listen_host %}
-    <listen_host>{{ host }}</listen_host>
+  <listen_host>{{ host }}</listen_host>
 {% endfor %}
   <remote_servers>
     <{{ clickhouse_cluster_name }}>
