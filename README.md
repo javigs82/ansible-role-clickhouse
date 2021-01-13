@@ -31,8 +31,8 @@ In order to install `molecule` use python3.
 
 ```sh
 
-python3 -m pip install --user "molecule[vagrant,lint]"
-pip3 install testinfra
+python3 -m pip install --user "molecule"
+python3 -m pip install --user "molecule-vagrant"
 
 ```
 
@@ -68,6 +68,10 @@ providing vagrant infrastructure with internal dns resolver
 with `nss-mdns` and `avahi`, vagrant is able to resolve dns just like **<hostname>.local**
 
 **Notice** that DNS resolution supposes to be more sophisticated in a real world use case.
+
+In order to properly configure hostname, take a look into de the following link:
+
+> https://www.vagrantup.com/docs/networking/basic_usage#setting-hostname
 
 ## Architecture
 

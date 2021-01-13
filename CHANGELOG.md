@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.1] - 2021-01-13
+### Add
+ - fix molecule: add vagrant networking hostname option to avoid errors in naming resolution
+
+## [1.7.0] - 2020-12-28
+### Add
+ - replace zookeeper rol in molecule
+
+## [1.6.1] - 2020-12-11
+### Fix
+ - add listen default host as var instead of defaults
+
+## [1.6.0] - 2020-12-11
+### Add
+ - replace custom config avoiding override default config
+
+## [1.5.0] - 2020-12-11
+### Add
+ - allow delete users
+
+
+## [1.4.0] - 2020-12-10
+### Add
+ - replace display_name by cluster_name var
+
 ## [1.3.1] - 2020-12-10
 ### Fix
  - fix zookeeper config file

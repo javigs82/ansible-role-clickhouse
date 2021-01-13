@@ -20,6 +20,7 @@ platforms:
       - network_name: private_network
         ip: 192.168.69.60
         virtualbox__intnet: true
+        hostname: true
     groups:
       - zookeeper
     config_options:
@@ -34,25 +35,27 @@ platforms:
       - network_name: private_network
         ip: 192.168.69.69
         virtualbox__intnet: true
+        hostname: true
     groups:
       - clickhouse
     config_options:
       ssh.keep_alive: yes
       ssh.remote_user: "'vagrant'"
-  # - name: ch01-shard01-replica02.local
-  #   box: centos/7
-  #   memory: 2048
-  #   cpus: 1
-  #   hostname: ch01-shard01-replica02
-  #   interfaces:
-  #     - network_name: private_network
-  #       ip: 192.168.69.70
-  #       virtualbox__intnet: true
-  #   groups:
-  #     - clickhouse
-  #   config_options:
-  #     ssh.keep_alive: yes
-  #     ssh.remote_user: "'vagrant'"
+  - name: ch01-shard01-replica02.local
+    box: centos/7
+    memory: 2048
+    cpus: 1
+    hostname: ch01-shard01-replica02
+    interfaces:
+      - network_name: private_network
+        ip: 192.168.69.70
+        virtualbox__intnet: true
+        hostname: true
+    groups:
+      - clickhouse
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: "'vagrant'"
   - name: ch01-shard02-replica01.local
     box: centos/7
     memory: 2048
@@ -62,25 +65,27 @@ platforms:
       - network_name: private_network
         ip: 192.168.69.72
         virtualbox__intnet: true
+        hostname: true
     groups:
       - clickhouse
     config_options:
       ssh.keep_alive: yes
       ssh.remote_user: "'vagrant'"
-  # - name: ch01-shard02-replica02.local
-  #   box: centos/7
-  #   memory: 2048
-  #   cpus: 1
-  #   hostname: ch01-shard02-replica02
-  #   interfaces:
-  #     - network_name: private_network
-  #       ip: 192.168.69.73
-  #       virtualbox__intnet: true
-  #   groups:
-  #     - clickhouse
-  #   config_options:
-  #     ssh.keep_alive: yes
-  #     ssh.remote_user: "'vagrant'"
+  - name: ch01-shard02-replica02.local
+    box: centos/7
+    memory: 2048
+    cpus: 1
+    hostname: ch01-shard02-replica02
+    interfaces:
+      - network_name: private_network
+        ip: 192.168.69.73
+        virtualbox__intnet: true
+        hostname: true
+    groups:
+      - clickhouse
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: "'vagrant'"
 provisioner:
   name: ansible
   connection_options:
