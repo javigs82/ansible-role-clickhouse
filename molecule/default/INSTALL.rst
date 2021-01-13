@@ -9,7 +9,6 @@ Requirements
 * python3
 * pip3
 * Molecule (see https://molecule.readthedocs.io/en/latest/installation.html) 
-* Testinfra (see https://testinfra.readthedocs.io/en/latest/)
 
 Dependencies
 ============
@@ -22,6 +21,5 @@ In order to install `Zookeeper`, this scenario uses ansible galaxy
 Install
 =======
 
-* pip3 install molecule[vagrant,lint]
-* pip3 install testinfra
-* pip3 install netaddr
+* python3 -m pip install --user "molecule"
+* python3 -m pip install --user "molecule-vagrant"
