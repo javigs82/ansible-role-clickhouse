@@ -10,7 +10,7 @@
 
     - name: Install nss-mdns RHEL
       yum:
-        name: nss-mdns
+        name: ['nss-mdns', 'net-tools', 'nc']
         state: present
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
 
