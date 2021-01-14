@@ -18,7 +18,7 @@
     <tcp_port_secure>{{ clickhouse_tcp_secure_port }}</tcp_port_secure> -->
 
     <interserver_http_port>{{ clickhouse_interserver_http }}</interserver_http_port>
-    <interserver_http_host>{{ clickhouse_replica_name }}</interserver_http_host>
+    <interserver_http_host>{{ inventory_hostname }}</interserver_http_host>
 
     <max_connections>{{ clickhouse_config.max_connections }}</max_connections>
     <keep_alive_timeout>{{ clickhouse_config.keep_alive_timeout }}</keep_alive_timeout>
@@ -76,10 +76,11 @@
 
     <!-- Settings to fine tune MergeTree tables. See documentation in source code, in MergeTreeSettings.h -->
 {% if clickhouse.merge_tree_config is defined %}
-        <merge_tree>
+    <merge_tree>
 {% for config in clickhouse.merge_tree_config %}
-            <{{ config }}>{{ clickhouse.merge_tree_config[config] }}</{{ config }}>
+        <{{ config }}>{{ clickhouse.merge_tree_config[config] }}</{{ config }}>
 {% endfor %}
-        </merge_tree>
+    </merge_tree>
 {% endif %}
+    <path>{{ clickhouse_path_data }}</path>
 </yandex>

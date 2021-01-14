@@ -4,7 +4,7 @@
     dest: "{{ item }}"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
-    mode: 0777
+    mode: 0755
     state: directory
   with_items:
     - "{{ clickhouse_path_config }}"
@@ -18,7 +18,7 @@
     dest: "{{ clickhouse_path_config_d }}/custom-config.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
-    mode: 0664
+    mode: 0644
   notify: restart-ch
 
 # user conf does not force to restart :)
@@ -28,7 +28,7 @@
     dest: /etc/clickhouse-server/users.d/users.xml
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
-    mode: 0664
+    mode: 0644
   no_log: true
 
 - name: Config remote_servers
@@ -37,7 +37,7 @@
     dest: "{{ clickhouse_path_config_d }}/remote-servers.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
-    mode: 0664
+    mode: 0644
   notify: restart-ch
 
 - name: Config macros
@@ -46,7 +46,7 @@
     dest: "{{ clickhouse_path_config_d }}/macros.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
-    mode: 0664
+    mode: 0644
   notify: restart-ch
 
 - name: Config zookeeper
@@ -55,6 +55,6 @@
     dest: "{{ clickhouse_path_config_d }}/zookeeper-servers.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
-    mode: 0664
+    mode: 0644
   notify: restart-ch
   when: groups['zookeeper'] is defined and (groups['zookeeper'] | length > 0)

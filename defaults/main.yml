@@ -38,6 +38,7 @@ clickhouse_package:
 clickhouse_path_config: "/etc/clickhouse-server"
 clickhouse_path_config_d: "{{ clickhouse_path_config }}/config.d"
 clickhouse_path_log: "/var/log/clickhouse-server"
+clickhouse_path_data: "/var/lib/clickhouse"
 
 # ch networking
 clickhouse_http_port: 8123
