@@ -3,8 +3,11 @@
   hosts: clickhouse
   gather_facts: false
   become: true
+  vars:
+    ch_local_verify_database: "local_db"
+    ch_distributed_verify_database: "distribute_db"
   tasks:
-    - name: Check ClickHouse service status
+    - name: Check CH service status
       command: systemctl status clickhouse-server
       args:
         warn: no
@@ -12,92 +15,92 @@
       changed_when: no
       ignore_errors: yes
 
-    - name: Verify ClickHouse is running
+    - name: Verify CH is running
       assert:
         that:
           - "'Active: active (running)' in service_status.stdout"
 
-    - name: Check ClickHouse client show database query
+    - name: Check CH client show database query
       command: clickhouse-client --query='SHOW DATABASES;'
       args:
         warn: no
       register: query_result
       changed_when: no
 
-    - name: Verify ClickHouse client
+    - name: Verify CH client
       assert:
         that:
           - query_result.rc == 0
           - query_result.stdout|length > 0
 
-    - name: Create database
-      command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS verify_test"
+    - name: Create DB
+      command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS {{ ch_local_verify_database }}"
       changed_when: no
 
-    - name: Create table verify_test
+    - name: Create table in {{ ch_local_verify_database }}
       command: >
         clickhouse-client --query
-        "CREATE TABLE IF NOT EXISTS verify_test.table_test(`id` UInt32, `City` String) ENGINE=TinyLog();"
+        "CREATE TABLE IF NOT EXISTS {{ ch_local_verify_database }}.table_test(`id` UInt32, `City` String) ENGINE=TinyLog();"
       changed_when: no
 
     - name: Insert data into table, 1.
-      command: clickhouse-client --query "INSERT INTO verify_test.table_test VALUES(11, 'Madrid');"
+      command: clickhouse-client --query "INSERT INTO {{ ch_local_verify_database }}.table_test VALUES(11, 'Madrid');"
       changed_when: no
 
     - name: Insert data into table, 2.
-      command: clickhouse-client --query "INSERT INTO verify_test.table_test VALUES(33, 'Leon');"
+      command: clickhouse-client --query "INSERT INTO {{ ch_local_verify_database }}.table_test VALUES(33, 'Leon');"
       changed_when: no
 
-    - name: Delete verify_test database.
-      command: clickhouse-client --query "DROP DATABASE verify_test;"
+    - name: Delete {{ ch_local_verify_database }} database.
+      command: clickhouse-client --query "DROP DATABASE {{ ch_local_verify_database }};"
       changed_when: no
 
     - name: Create distributed database
-      command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS distribute ON CLUSTER '{cluster}'"
+      command: clickhouse-client --query "CREATE DATABASE IF NOT EXISTS {{ ch_distributed_verify_database }} ON CLUSTER '{cluster}'"
       changed_when: no
-      run_once: yes # to test distributed table
+      run_once: yes
 
     - name: Create local events
       command: >
         clickhouse-client --query
-        "CREATE TABLE IF NOT EXISTS distribute.local_events ON CLUSTER '{cluster}'
+        "CREATE TABLE IF NOT EXISTS {{ ch_distributed_verify_database }}.events_local ON CLUSTER '{cluster}'
         (EventDate DateTime, CounterID UInt32, UserID UInt32)
-        ENGINE = ReplicatedMergeTree('/clickhouse/{cluster}/distribute/tables/events/{shard}',
+        ENGINE = ReplicatedMergeTree('/clickhouse/{cluster}/{{ ch_distributed_verify_database }}/tables/events/{shard}',
         '{replica}') PARTITION BY toYYYYMM(EventDate) ORDER BY (CounterID, EventDate, intHash32(UserID))"
       changed_when: no
-      run_once: yes # to test distributed table
+      run_once: yes
 
     - name: Create distributed events
       command: >
         clickhouse-client --query
-        "CREATE TABLE IF NOT EXISTS distribute.events ON CLUSTER '{cluster}' AS distribute.local_events
-        ENGINE = Distributed('{cluster}', 'distribute', 'local_events', rand())"
+        "CREATE TABLE IF NOT EXISTS {{ ch_distributed_verify_database }}.events ON CLUSTER '{cluster}' AS {{ ch_distributed_verify_database }}.events_local
+        ENGINE = Distributed('{cluster}', '{{ ch_distributed_verify_database }}', 'events_local', rand())"
       changed_when: no
-      run_once: yes # to test distributed table
+      run_once: yes
 
     - name: Insert new distributed events
       command: >
         clickhouse-client --query
-        "INSERT INTO distribute.events(EventDate, CounterID, UserID)
-        VALUES (now(), 1, 10), (now(), 2, 20), (now(), 3, 15), (now(), 4, 25)"
+        "INSERT INTO {{ ch_distributed_verify_database }}.events(EventDate, CounterID, UserID)
+        VALUES (now(), rand(), 10), (now(), rand(), 20), (now(), rand(), 15), (now(), rand(), 25)"
       changed_when: no
-      run_once: yes # to test distributed table
+      run_once: yes
 
-    - name: Select local_events
+    - name: Select events_local
       command: >
        clickhouse-client --query
-       "SELECT * FROM distribute.local_events FORMAT PrettyCompact"
+       "SELECT * FROM {{ ch_distributed_verify_database }}.events_local FORMAT PrettyCompact"
       changed_when: no
       register: query_result
 
-    - name: Print query local_events
+    - name: Print query events_local
       debug:
         msg: "{{ query_result.stdout_lines }}"
 
     - name: Select events
       command: >
        clickhouse-client --query
-       "SELECT * FROM distribute.events FORMAT PrettyCompact"
+       "SELECT * FROM {{ ch_distributed_verify_database }}.events FORMAT PrettyCompact"
       changed_when: no
       register: query_result
 
@@ -106,6 +109,20 @@
         msg: "{{ query_result.stdout_lines }}"
 
     - name: DELETE distributed database
-      command: clickhouse-client --query "DROP DATABASE distribute ON CLUSTER '{cluster}'"
+      command: clickhouse-client --query "DROP DATABASE {{ ch_distributed_verify_database }} ON CLUSTER '{cluster}'"
       changed_when: no
-      run_once: yes # to test distributed table
+      run_once: yes
+
+    - name: A bit of benchmark
+      command: >
+       clickhouse-benchmark -i 10
+      args:
+        stdin: "SELECT * FROM system.numbers LIMIT 10000000 OFFSET 10000000"
+      changed_when: no
+      run_once: yes
+      register: benchmark_reg
+
+    - name: Print benchmark statistics
+      debug:
+        msg: "{{ benchmark_reg.stderr_lines }}"
+      run_once: yes

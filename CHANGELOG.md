@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2021-01-13
+### Add
+- add clickhouse path data
+### Fixed
+- fix dir and files permissions
+- fix replica_name: set equals than shard name (by regex)
+
 ## [1.7.1] - 2021-01-13
 ### Add
  - fix molecule: add vagrant networking hostname option to avoid errors in naming resolution
