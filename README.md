@@ -9,7 +9,7 @@ The cluster is built based on ansible inventory groups aka **inventory patterns*
  with regex like: `^ch\\d{2}-shard\\d{2}-replica\\d{2}`
  - **zookeeper**: contains all zookeeper inventory hosts.
 
-Take a look into [defaults](./defaults/main.yml) to check how shard and replicas is being calculated in function of hostnames: 
+Take a look into [defaults](./defaults/main.yml) to check how shards and replicas are being calculated in function of hostnames: 
 
 **Note** that `{{ inventory_hostname }}` is the DNS or IP address while `{{ ansible_hostname }}` is the hostname of the machine.
 
@@ -24,7 +24,6 @@ In order to check if the hostname (`{{ ansible_hostname}}`) is properly set, che
 * python3
 * pip3
 * Molecule (see https://molecule.readthedocs.io/en/latest/installation.html) 
-* Testinfra (see https://testinfra.readthedocs.io/en/latest/)
 
 
 In order to install `molecule` use python3.
@@ -36,7 +35,6 @@ python3 -m pip install --user "molecule-vagrant"
 
 ```
 
-where `vagrant` is the driver and `testinfra` is the testing provider.
 
 This solution is based on the ability of resolve hostname in a private dns server.
 So, assuming vagrant does not provide any dns solution, the following software is installed in prepare.yml,
@@ -231,7 +229,8 @@ Zookeeper host list is based on inventory groups pattern
 
 ```yml
 
-# zookeeper is not at all mandatory. If zookeeper is not installed, replication must be accomplished by the client side
+# zookeeper is not at all mandatory. If zookeeper is not installed, 
+# replication must be accomplished by the client side
 clickhouse_zookeeper_list: "{{ groups['zookeeper'] }}"
 clickhouse_zookeeper_port: "2181"
 
@@ -239,10 +238,12 @@ clickhouse_zookeeper_port: "2181"
 
 ## Role Vars Variables
 
-They are variables that are greatest than defaults and inventory groups vars. They can only be overridden by some higher precedence, but normally they are not.
+They are variables that are greatest than defaults and inventory groups vars. 
+They can only be overridden by some higher precedence, but normally they are not.
 
-Notice that cluster configuration relies on hostname and with that, `clickhouse_replica_name` and `clickhouse_shard_name`
-take relevance while `clickhouse_hostname_regex` is the regex of the hostname definition: `^ch\\d{2}-(shard\\d{2})-replica\\d{2}` See [vars](./vars/defaults.yml) for more info.
+Notice that cluster configuration relies on hostname and with that, 
+`clickhouse_replica_name` and `clickhouse_shard_name` take relevance while `clickhouse_hostname_regex` 
+is the regex of the hostname definition: `^ch\\d{2}-(shard\\d{2})-replica\\d{2}` See [vars](./vars/defaults.yml) for more info.
 
 Check variables in [vars](./vars/main.yml)
 
