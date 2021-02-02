@@ -3,14 +3,16 @@
 clickhouse_version: "20.9.5.5"
 clickhouse_allow_downgrade: false
 clickhouse_cluster_name: "mycluster"
+clickhouse_service_name: "clickhouse-server"
+clickhouse_service_status: "started"
 # replica list are all host of a group
 clickhouse_replica_list: "{{ groups['clickhouse'] }}"
 # shard list are calculated by replica list. The must accomplish with regex: see clickhouse_hostname_regex in vars/main.yml
 clickhouse_shard_list: "{{ clickhouse_replica_list | map('extract', hostvars, 'ansible_hostname') | map('regex_search', clickhouse_hostname_regex, '\\1') | unique | map ('first') }}"
 
 # user/group
-clickhouse_group: clickhouse
-clickhouse_user: clickhouse
+clickhouse_group: "clickhouse"
+clickhouse_user: "clickhouse"
 
 # ch config
 clickhouse_config:
@@ -28,7 +30,7 @@ clickhouse_config:
 # yum support 
 clickhouse_supported: yes
 clickhouse_repo: "https://repo.clickhouse.tech/rpm/stable/x86_64/"
-clickhouse_repo_key: https://repo.clickhouse.tech//CLICKHOUSE-KEY.GPG
+clickhouse_repo_key: "https://repo.clickhouse.tech//CLICKHOUSE-KEY.GPG"
 clickhouse_package:
   - "clickhouse-client-{{ clickhouse_version }}"
   - "clickhouse-common-static-{{ clickhouse_version }}"
@@ -78,7 +80,7 @@ clickhouse_users_list:
 
 # ch logger
 clickhouse_logger:
-  level: trace
+  level: "trace"
   log: "{{ clickhouse_path_log }}/clickhouse-server.log"
   errorlog: "{{ clickhouse_path_log }}/clickhouse-server.err.log"
   size: 1000M

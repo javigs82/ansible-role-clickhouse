@@ -3,3 +3,5 @@
     tags: [ch::install]
   - import_tasks: config.yml
     tags: [ch::config]
+  - import_tasks: service.yml
+    tags: [ch::service]

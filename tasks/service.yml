@@ -1,0 +1,7 @@
+---
+
+- name: Service clickhouse-server
+  service:
+    name: "{{ clickhouse_service_name }}"
+    state: "{{ clickhouse_service_status }}"
+    enabled: yes

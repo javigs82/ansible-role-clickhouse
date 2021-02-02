@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2021-02-01
+### Add
+- add service tasks to allow start or stop
+
 ## [1.8.0] - 2021-01-13
 ### Add
 - add clickhouse path data
