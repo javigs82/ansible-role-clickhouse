@@ -1,9 +1,13 @@
+---
 # regex to discover shards and replicas
 clickhouse_hostname_regex: "^ch\\d{2}-(shard\\d{2})-(replica\\d{2})"
 #discover based on regex
 clickhouse_shard_name: "{{ ansible_hostname | regex_search(clickhouse_hostname_regex, '\\1') | first }}"
 clickhouse_replica_name: "{{ ansible_hostname | regex_search(clickhouse_hostname_regex, '\\2') | first }}"
 
+# replica list are all host of a group
+clickhouse_replica_list: "{{ groups['clickhouse'] }}"
+# shard list are calculated by replica list. The must accomplish with regex: see clickhouse_hostname_regex in vars/main.yml
 clickhouse_shard_list: "{{ clickhouse_replica_list | map('extract', hostvars, 'ansible_hostname') | map('regex_search', clickhouse_hostname_regex, '\\1') | unique | map ('first') }}"
 
 clickhouse_listen_host_default:

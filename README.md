@@ -164,7 +164,6 @@ Use these variables to set up yum repository
 
 ```yml
 
-clickhouse_supported: yes
 clickhouse_repo: "https://repo.clickhouse.tech/rpm/stable/x86_64/"
 clickhouse_repo_key: https://repo.clickhouse.tech//CLICKHOUSE-KEY.GPG
 clickhouse_package:
