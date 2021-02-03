@@ -1,0 +1,33 @@
+---
+- name: Ensure clickhouse group
+  group:
+    name: "{{ clickhouse_group }}"
+    system: yes
+    state: present
+
+- name: Ensure clickhouse user
+  user:
+    name: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    system: yes
+    shell: /usr/sbin/nologin
+    createhome: no
+
+- name:  Ensure clickhouse apt repo GPG key imported
+  apt_key:
+    keyserver: "{{ clickhouse_apt_repo_keyserver }}"
+    id: "{{ clickhouse_apt_repo_key }}"
+
+- name: Ensure clickhouse apt repo installed
+  apt_repository:
+    repo: "{{ clickhouse_apt_repo }}"
+    state: present
+
+- name: Ensure clickhouse apt package installed
+  apt:
+    name: "{{ clickhouse_apt_package }}"
+    state: present
+    force: yes
+    update_cache: yes
+  notify:
+    - restart-ch

@@ -1,3 +1,4 @@
+---
 - name: Ensure clickhouse group
   group:
     name: "{{ clickhouse_group }}"
@@ -12,24 +13,24 @@
     shell: /usr/sbin/nologin
     createhome: no
 
-- name: Ensure clickhouse repo GPG key imported
+- name: Ensure clickhouse yum repo GPG key imported
   rpm_key:
     state: present
-    key: "{{ clickhouse_repo_key }}"
+    key: "{{ clickhouse_yum_repo_key }}"
 
-- name: Ensure clickhouse repo installed
+- name: Ensure clickhouse yum repo installed
   yum_repository:
     name: clickhouse
     file: clickhouse
     description: "Clickhouse repo"
-    baseurl: "{{ clickhouse_repo }}"
+    baseurl: "{{ clickhouse_yum_repo }}"
     enabled: yes
     gpgcheck: 1
-    gpgkey: "{{ clickhouse_repo_key }}"
+    gpgkey: "{{ clickhouse_yum_repo_key }}"
 
-- name: Ensure clickhouse package installed
+- name: Ensure clickhouse yum package installed
   yum:
-    name: "{{ clickhouse_package }}"
+    name: "{{ clickhouse_yum_package }}"
     state: present
     allow_downgrade: "{{ clickhouse_allow_downgrade }}" # for rollback purposes
   notify:

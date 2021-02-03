@@ -119,10 +119,8 @@
       args:
         stdin: "SELECT * FROM system.numbers LIMIT 10000000 OFFSET 10000000"
       changed_when: no
-      run_once: yes
       register: benchmark_reg
 
     - name: Print benchmark statistics
       debug:
         msg: "{{ benchmark_reg.stderr_lines }}"
-      run_once: yes

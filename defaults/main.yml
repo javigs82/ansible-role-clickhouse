@@ -3,16 +3,36 @@
 clickhouse_version: "20.9.5.5"
 clickhouse_allow_downgrade: false
 clickhouse_cluster_name: "mycluster"
+
 clickhouse_service_name: "clickhouse-server"
 clickhouse_service_status: "started"
-# replica list are all host of a group
-clickhouse_replica_list: "{{ groups['clickhouse'] }}"
-# shard list are calculated by replica list. The must accomplish with regex: see clickhouse_hostname_regex in vars/main.yml
-clickhouse_shard_list: "{{ clickhouse_replica_list | map('extract', hostvars, 'ansible_hostname') | map('regex_search', clickhouse_hostname_regex, '\\1') | unique | map ('first') }}"
 
 # user/group
 clickhouse_group: "clickhouse"
 clickhouse_user: "clickhouse"
+
+# yum support 
+clickhouse_yum_repo: "https://repo.clickhouse.tech/rpm/stable/x86_64/"
+clickhouse_yum_repo_key: "https://repo.clickhouse.tech//CLICKHOUSE-KEY.GPG"
+clickhouse_yum_package:
+  - "clickhouse-client-{{ clickhouse_version }}"
+  - "clickhouse-common-static-{{ clickhouse_version }}"
+  - "clickhouse-server-{{ clickhouse_version }}"
+
+# apt support
+clickhouse_apt_repo: "deb https://repo.clickhouse.tech/deb/stable/ main/"
+clickhouse_apt_repo_keyserver: "keyserver.ubuntu.com"
+clickhouse_apt_repo_key: "E0C56BD4"
+clickhouse_apt_package:
+  - "clickhouse-client={{ clickhouse_version }}"
+  - "clickhouse-common-static={{ clickhouse_version }}"
+  - "clickhouse-server={{ clickhouse_version }}"
+
+# path
+clickhouse_path_config: "/etc/clickhouse-server"
+clickhouse_path_config_d: "{{ clickhouse_path_config }}/config.d"
+clickhouse_path_log: "/var/log/clickhouse-server"
+clickhouse_path_data: "/var/lib/clickhouse"
 
 # ch config
 clickhouse_config:
@@ -27,20 +47,6 @@ clickhouse_config:
   mlock_status: false
   merge_tree_config: []
 
-# yum support 
-clickhouse_supported: yes
-clickhouse_repo: "https://repo.clickhouse.tech/rpm/stable/x86_64/"
-clickhouse_repo_key: "https://repo.clickhouse.tech//CLICKHOUSE-KEY.GPG"
-clickhouse_package:
-  - "clickhouse-client-{{ clickhouse_version }}"
-  - "clickhouse-common-static-{{ clickhouse_version }}"
-  - "clickhouse-server-{{ clickhouse_version }}"
-
-# path
-clickhouse_path_config: "/etc/clickhouse-server"
-clickhouse_path_config_d: "{{ clickhouse_path_config }}/config.d"
-clickhouse_path_log: "/var/log/clickhouse-server"
-clickhouse_path_data: "/var/lib/clickhouse"
 
 # ch networking
 clickhouse_http_port: 8123
@@ -58,24 +64,14 @@ clickhouse_zookeeper_port: "2181"
 
 # ch users: https://clickhouse.tech/docs/en/operations/configuration-files/
 clickhouse_users_list:
-  - { user_name: "reader",
-      profile: "readonly",
-      password: "r3ad3R",
-      networks: ["::/0"],
-      quota: "default" }
   - { user_name: "javito",
       profile: "default",
-      password: "javito",
-      networks: ["::/0"],
+      password: "j4vito",
+      networks: ["::/1"],
       quota: "default" }
   - { user_name: "default",
       profile: "default",
-      networks: ["::/0"],
-      quota: "default" }
-  - { user_name: "luis",
-      profile: "default",
-      password: "luis",
-      networks: ["::1", "127.0.0.1"],
+      networks: ["::/1"],
       quota: "default" }
 
 # ch logger
