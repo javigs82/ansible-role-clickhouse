@@ -1,6 +1,6 @@
 ---
 # clickhouse cluster definition
-clickhouse_version: "20.8.7.15"
+clickhouse_version: "20.9.5.5"
 clickhouse_allow_downgrade: false
 clickhouse_cluster_name: "mycluster"
 
@@ -64,24 +64,14 @@ clickhouse_zookeeper_port: "2181"
 
 # ch users: https://clickhouse.tech/docs/en/operations/configuration-files/
 clickhouse_users_list:
-  - { user_name: "reader",
-      profile: "readonly",
-      password: "r3ad3R",
-      networks: ["::/0"],
-      quota: "default" }
   - { user_name: "javito",
       profile: "default",
-      password: "javito",
-      networks: ["::/0"],
+      password: "j4vito",
+      networks: ["::/1"],
       quota: "default" }
   - { user_name: "default",
       profile: "default",
-      networks: ["::/0"],
-      quota: "default" }
-  - { user_name: "luis",
-      profile: "default",
-      password: "luis",
-      networks: ["::1", "127.0.0.1"],
+      networks: ["::/1"],
       quota: "default" }
 
 # ch logger

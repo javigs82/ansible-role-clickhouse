@@ -1,7 +1,7 @@
 # Ansible Clickhouse
 
 This role is in charge of configuring & installing a clickhouse cluster with N shard and M replicas. 
-At this moment only `centos7` is implemented.
+**apt and yum** molecule tested on top of Vagrant.
 
 The cluster is built based on ansible inventory groups aka **inventory patterns**, so following groups are mandatory to run the cluster:
 
@@ -130,11 +130,45 @@ take relevance while `clickhouse_hostname_regex` is the regex of the hostname de
 ```yml
 
 # clickhouse cluster definition
-clickhouse_version: "20.9.5.5"
+clickhouse_version: "20.8.7.15"
 clickhouse_allow_downgrade: false
 clickhouse_cluster_name: "mycluster"
-# replica list are all host of a group
-clickhouse_replica_list: "{{ groups['clickhouse'] }}"
+
+clickhouse_service_name: "clickhouse-server"
+clickhouse_service_status: "started"
+
+# user/group
+clickhouse_group: "clickhouse"
+clickhouse_user: "clickhouse"
+
+```
+### Clickhouse Installation Support
+
+```yml
+
+# yum support 
+clickhouse_yum_repo: "https://repo.clickhouse.tech/rpm/stable/x86_64/"
+clickhouse_yum_repo_key: "https://repo.clickhouse.tech//CLICKHOUSE-KEY.GPG"
+clickhouse_yum_package:
+  - "clickhouse-client-{{ clickhouse_version }}"
+  - "clickhouse-common-static-{{ clickhouse_version }}"
+  - "clickhouse-server-{{ clickhouse_version }}"
+
+# apt support
+clickhouse_apt_repo: "deb https://repo.clickhouse.tech/deb/stable/ main/"
+clickhouse_apt_repo_keyserver: "keyserver.ubuntu.com"
+clickhouse_apt_repo_key: "E0C56BD4"
+clickhouse_apt_package:
+  - "clickhouse-client={{ clickhouse_version }}"
+  - "clickhouse-common-static={{ clickhouse_version }}"
+  - "clickhouse-server={{ clickhouse_version }}"
+
+# path
+clickhouse_path_config: "/etc/clickhouse-server"
+clickhouse_path_config_d: "{{ clickhouse_path_config }}/config.d"
+clickhouse_path_log: "/var/log/clickhouse-server"
+clickhouse_path_data: "/var/lib/clickhouse"
+
 
 ```
 
@@ -157,22 +191,6 @@ clickhouse_config:
   merge_tree_config: []
 
 ```
-
-### Yum Support
-
-Use these variables to set up yum repository
-
-```yml
-
-clickhouse_repo: "https://repo.clickhouse.tech/rpm/stable/x86_64/"
-clickhouse_repo_key: https://repo.clickhouse.tech//CLICKHOUSE-KEY.GPG
-clickhouse_package:
-  - "clickhouse-client-{{ clickhouse_version }}"
-  - "clickhouse-common-static-{{ clickhouse_version }}"
-  - "clickhouse-server-{{ clickhouse_version }}"
-
-```
-
 ### Networking
 
 These variable are related to networking configuration
@@ -199,25 +217,11 @@ https://clickhouse.tech/docs/en/operations/configuration-files/
 
 ```yml
 
+# ch users: https://clickhouse.tech/docs/en/operations/configuration-files/
 clickhouse_users_list:
-  - { user_name: "reader",
-      profile: "readonly",
-      password: "r3ad3R",
-      networks: ["::/0"],
-      quota: "default" }
-  - { user_name: "javito",
-      profile: "default",
-      password: "javito",
-      networks: ["::/0"],
-      quota: "default" }
   - { user_name: "default",
       profile: "default",
-      networks: ["::/0"],
-      quota: "default" }
-  - { user_name: "luis",
-      profile: "default",
-      password: "luis",
-      networks: ["::1", "127.0.0.1"],
+      networks: ["::/1"],
       quota: "default" }
 
 ```
@@ -248,19 +252,22 @@ Check variables in [vars](./vars/main.yml)
 
 ```yml
 
+---
 # regex to discover shards and replicas
 clickhouse_hostname_regex: "^ch\\d{2}-(shard\\d{2})-(replica\\d{2})"
 #discover based on regex
 clickhouse_shard_name: "{{ ansible_hostname | regex_search(clickhouse_hostname_regex, '\\1') | first }}"
 clickhouse_replica_name: "{{ ansible_hostname | regex_search(clickhouse_hostname_regex, '\\2') | first }}"
 
+# shard list are calculated by replica list. The must accomplish with regex: see clickhouse_hostname_regex in vars/main.yml
 clickhouse_shard_list: "{{ clickhouse_replica_list | map('extract', hostvars, 'ansible_hostname') | map('regex_search', clickhouse_hostname_regex, '\\1') | unique | map ('first') }}"
+# replica list are all host of a group
+clickhouse_replica_list: "{{ groups['clickhouse'] }}"
 
 clickhouse_listen_host_default:
   - "{{ inventory_hostname }}"
   - "127.0.0.1"
   - "::1"
-
 ```
 
 They should NEVER be overridden as they are the core of how the rol discover and relate replicas with shards.
@@ -271,6 +278,7 @@ Following tags are supported in this role:
 
  - `ch:configure`: For executing only config tasks.
  - `ch:install`: For download and install the software.
+ - `ch:service`: For managing `systemctl` service status
 
 ## Dependencies
 
